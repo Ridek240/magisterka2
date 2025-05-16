@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
+﻿using DiscordRPC;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -14,7 +16,7 @@ namespace magisterka2
 {
     internal class AddMatch
     {
-
+        
         public async Task AddRootObjectAsync()
         {
 
@@ -23,7 +25,7 @@ namespace magisterka2
                 foreach (var division in Enum.GetValues(typeof(Division)))
                 {
 
-                    var list = await GetPlayersInElo(rank.ToString(),division.ToString());
+                    var list = await GetPlayersInElo(rank.ToString(), division.ToString());
 
                     Console.WriteLine(list.Count);
                     //return;
@@ -145,7 +147,7 @@ namespace magisterka2
         {
             Console.WriteLine($"{DateTime.Now.ToString("HH:mm:ss")}:Searching for match with ID: {matchid}");
 
-            
+
 
             using (HttpClient client = new HttpClient())
             {
@@ -178,7 +180,8 @@ namespace magisterka2
                 }
             }
         }
-
+        static string[] klucze;
+        static int Current_Key = 0;
         public static void FixApi()
         {
             string sciezka = @"C:\tournament\ApiKey.txt";
@@ -186,8 +189,20 @@ namespace magisterka2
             {
                 if (File.Exists(sciezka))
                 {
-                    Api_Key = File.ReadAllText(sciezka);
-                    Console.WriteLine("Klucz API: " + Api_Key);
+                    klucze = File.ReadAllLines(sciezka); // Wczytanie wszystkich linii do tablicy stringów
+                    foreach (string linia in klucze)
+                    {
+                        Console.WriteLine("Linia: " + linia);
+                    }
+
+                    // Jeśli np. chcesz przypisać pierwszą linię jako klucz API:
+                    if (klucze.Length > 0)
+                    {
+                        Api_Key = klucze[Current_Key];
+                        Console.WriteLine("Klucz API: " + Api_Key);
+                        Current_Key++;
+                        if(Current_Key>= klucze.Length) { Current_Key = 0; }    
+                    }
                 }
                 else
                 {
@@ -200,25 +215,329 @@ namespace magisterka2
             }
         }
 
-        public enum Rank
-        {
-            //IRON,
-            //BRONZE,
-            //SILVER,
-            //GOLD,
-            PLATINUM,
-            EMERALD,
-            DIAMOND
 
-        }
-        public enum Division
-        {
-            I,
-            II,
-            III,
-            IV
 
+        public List<Primary> GetDataFromJson(string json)
+        {
+
+
+            var Output = new List<Primary>();
+            Rootobject Rootobj = JsonConvert.DeserializeObject<Rootobject>(json);
+
+            if (Rootobj == null) return Output;
+
+            foreach (var particilan in Rootobj.info.participants)
+            {
+                //Console.WriteLine($"Przerabiam {Rootobj.metadata.matchId} {particilan.participantId}");
+
+                Objectives objectives = Rootobj.info.teams.First(x => x.teamId == particilan.teamId).objectives;
+
+                var stat = new Primary(Rootobj.metadata.matchId, particilan, particilan.challenges, objectives);
+
+
+                Output.Add(stat);
+            }
+            Console.WriteLine($"Wynik {Output.Count}");
+            return Output;
         }
+
+        public void GetMatchJson()
+        {
+            using var db = new GameDbContext();
+            db.Database.EnsureCreated();
+            int i = 0;
+            foreach (var line in File.ReadLines(@"C:\magisterka\dane\BRONZE_I.txt"))
+            {
+
+                var output = GetDataFromJson(line);
+
+                foreach (var item in output)
+                {
+                    bool exists = db.Primary.Any(p => p.matchId == item.matchId && p.participantId == item.participantId);
+                    if (!exists)
+                    {
+                        db.Primary.Add(item);
+                    }
+                }
+                Console.WriteLine($"Zokończono linie {i++}");
+                db.SaveChanges();
+
+            }
+        }
+
+        public void GetMatchJson2(string file)
+        {
+            using var db = new GameDbContext();
+            db.Database.EnsureCreated();
+            var allExistingKeys = new HashSet<(string matchId, int participantId)>(
+    db.Primary.Select(p => new { p.matchId, p.participantId })
+              .AsEnumerable()
+              .Select(x => (x.matchId, x.participantId))
+);
+
+            // BUFOR NA NOWE ELEMENTY
+            List<Primary> buffer = new();
+            int batchSize = 2000;
+            int i = 0;
+
+            foreach (string line in File.ReadLines(file))
+            {
+                var output = GetDataFromJson(line);
+
+                foreach (var item in output)
+                {
+                    var key = (item.matchId, item.participantId);
+
+                    if (!allExistingKeys.Contains(key))
+                    {
+                        buffer.Add(item);
+                        allExistingKeys.Add(key); // dodaj też do cache'u żeby nie dodać 2x w buforze
+                    }
+
+                    if (buffer.Count >= batchSize)
+                    {
+                        db.Primary.AddRange(buffer);
+                        db.SaveChanges();
+                        buffer.Clear();
+                        Console.WriteLine($"Zapisano {batchSize} rekordów (linia {i})");
+                    }
+                }
+
+                Console.WriteLine($"Zakończono linię {i++}");
+            }
+
+            // zapisz to co zostało
+            if (buffer.Count > 0)
+            {
+                db.Primary.AddRange(buffer);
+                db.SaveChanges();
+                Console.WriteLine($"Zapisano ostatnie {buffer.Count} rekordów");
+            }
+        }
+
+        public void IterateThrouFolder()
+        {
+            string folderPath = @"C:\magisterka\dane";
+
+            // Pobierz wszystkie pliki w folderze (możesz dodać filtr np. "*.txt")
+            string[] files = Directory.GetFiles(folderPath);
+
+            foreach (string file in files)
+            {
+                Console.WriteLine($"Przetwarzam Plik {file}");
+
+                // Przykład: czytanie pierwszej linii
+                GetMatchJson2(file);
+            }
+        }
+
+        public static void AnalyzePrimaryFields(GameDbContext db)
+        {
+            var data = db.Primary.ToList(); // 1. Pobierz dane z bazy
+
+            var numericProps = typeof(Primary).GetProperties()
+                .Where(p => p.PropertyType == typeof(int) ||
+                            p.PropertyType == typeof(double) ||
+                            p.PropertyType == typeof(float) ||
+                            p.PropertyType == typeof(long) ||
+                            p.PropertyType == typeof(decimal))
+                .ToList();
+
+            foreach (var prop in numericProps)
+            {
+                var values = data
+                    .Select(item => prop.GetValue(item))
+                    .Where(v => v != null)
+                    .Select(v => Convert.ToDouble(v))
+                    .ToList();
+
+                if (values.Count == 0)
+                    continue;
+
+                double average = values.Average();
+                double stddev = Math.Sqrt(values.Select(v => Math.Pow(v - average, 2)).Average());
+                double min = values.Min();
+                double max = values.Max();
+
+                Console.WriteLine($"Pole: {prop.Name}");
+                Console.WriteLine($"  Średnia: {average:F2}");
+                Console.WriteLine($"  Odchylenie standardowe: {stddev:F2}");
+                Console.WriteLine($"  Min: {min}");
+                Console.WriteLine($"  Max: {max}");
+                Console.WriteLine();
+            }
+        }
+
+        public static void AnalyzePrimaryFieldsToFile(GameDbContext db, string filePath)
+        {
+            var data = db.Primary.ToList();
+
+            var numericProps = typeof(Primary).GetProperties()
+                .Where(p => p.PropertyType == typeof(int) ||
+                            p.PropertyType == typeof(double) ||
+                            p.PropertyType == typeof(float) ||
+                            p.PropertyType == typeof(long) ||
+                            p.PropertyType == typeof(decimal))
+                .ToList();
+
+            var sb = new StringBuilder();
+
+
+            foreach (var prop in numericProps)
+            {
+                var values = data
+                    .Select(item => prop.GetValue(item))
+                    .Where(v => v != null)
+                    .Select(v => Convert.ToDouble(v))
+                    .ToList();
+
+                if (values.Count == 0)
+                    continue;
+
+                double average = values.Average();
+                double stddev = Math.Sqrt(values.Select(v => Math.Pow(v - average, 2)).Average());
+                double min = values.Min();
+                double max = values.Max();
+
+                var result = new
+                {
+                    Field = prop.Name,
+                    Average = average,
+                    StdDev = stddev,
+                    Min = min,
+                    Max = max
+                };
+
+                string jsonLine = JsonConvert.SerializeObject(result);
+                sb.Append(jsonLine + Environment.NewLine);
+                //sb.AppendText("sciezka.json", jsonLine + Environment.NewLine);
+
+                Console.WriteLine($"Zapisano {prop.Name}");
+            }
+
+            File.WriteAllText(filePath, sb.ToString(), Encoding.UTF8);
+            Console.WriteLine($"Statystyki zapisane do pliku: {filePath}");
+        }
+
+        public async Task<Rank> FindRankByPUUID(string puuid, int i , int max)
+        {
+            //FixApi();
+            
+            using (HttpClient client = new HttpClient())
+            {
+                try
+                {
+                    while (true)
+                    {
+                        string api_url = $"https://eun1.api.riotgames.com/lol/league/v4/entries/by-puuid/{puuid}?api_key={Api_Key}";
+                        // Send GET request asynchronously
+                        HttpResponseMessage response = await client.GetAsync(api_url);
+
+                        // Check if the response was successful
+                        if (response.IsSuccessStatusCode)
+                        {
+                            string jsonResponse = await response.Content.ReadAsStringAsync();
+                            JArray players = JArray.Parse(jsonResponse);
+                            foreach (var queue in players)
+                            {
+                                if (queue["queueType"]?.ToString() == "RANKED_SOLO_5x5")
+                                {
+                                    string tier = queue["tier"]?.ToString();
+                                    if (Enum.TryParse(queue["tier"]?.ToString().ToUpper(), out Rank result))
+                                    {
+                                        return result;
+                                    }
+                                    else return Rank.NONE;
+
+                                }
+                            }
+                            return Rank.NONE;
+
+                        }
+                        else
+                        {
+                            Console.WriteLine($"{DateTime.Now.ToString("HH:mm:ss")}:Match Request failed with status code: {response.StatusCode}. Retrying in 30 seconds...");
+                            FixApi();
+                            Discord.SetRichPresence("Rangi Graczy", "Czekam", i, max);
+                            await Task.Delay(4 * 30000); // 30 seconds
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Handle exceptions (e.g., network issues)
+                    Console.WriteLine($"Request failed with exception: {ex.Message}");
+                    return Rank.NONE;
+                }
+            }
+            }
+
+
+
+
+
+        public async Task GetSecondaryData(GameDbContext db)
+        {
+            var allExistingKeys = new HashSet<(string matchId, string puuid)>(
+    db.Secondary.Select(p => new { p.matchId, p.puuid })
+    .AsEnumerable()
+    .Select(x => (x.matchId, x.puuid))
+    );
+            int max = db.Primary.Count();
+            // BUFOR NA NOWE ELEMENTY
+            List<Secondary> buffer = new();
+            int batchSize = 2000;
+            int i = 0;
+
+            await foreach (var data in db.Primary.AsAsyncEnumerable())
+            {
+                var key = (data.matchId, data.puuid);
+
+                if (!allExistingKeys.Contains(key))
+                {
+                    buffer.Add(new Secondary(db.PlayerRanks.FirstOrDefault(x => x.puuid == data.puuid).Rank, data));
+                    allExistingKeys.Add(key); // dodaj też do cache'u żeby nie dodać 2x w buforze
+                    i++;
+                    Discord.SetRichPresence("Secondary Data", "Przetwarzam", i, max);
+                }
+
+                if (buffer.Count >= batchSize)
+                {
+                    db.Secondary.AddRange(buffer);
+                    db.SaveChanges();
+                    buffer.Clear();
+                    Console.WriteLine($"Zapisano {batchSize} rekordów (linia {i})");
+                }
+            }
+        }
+    }
+
+
 
     }
-}
+
+
+    public enum Rank
+    {
+        NONE,
+        IRON,
+        BRONZE,
+        SILVER,
+        GOLD,
+        PLATINUM,
+        EMERALD,
+        DIAMOND,
+        MASTER,
+        GRANDMASTER,
+        CHALLENGER
+
+    }
+    public enum Division
+    {
+        I,
+        II,
+        III,
+        IV
+
+    }
+

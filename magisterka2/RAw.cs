@@ -1,28 +1,20 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace magisterka2old
+namespace magisterka2
 {
 
     public class Rootobject
     {
-        [Key]
-        public int Id { get; set; }
         public Metadata metadata { get; set; }
         public Info info { get; set; }
     }
 
     public class Metadata
     {
-        [Key]
-        public int Id { get; set; }  // Klucz główny, jeżeli chcesz mapować tę klasę na tabelę w bazie danych
         public string dataVersion { get; set; }
         public string matchId { get; set; }
         public string[] participants { get; set; }
@@ -30,8 +22,6 @@ namespace magisterka2old
 
     public class Info
     {
-        [Key]
-        public int ID { get; set; }
         public string endOfGameResult { get; set; }
         public long gameCreation { get; set; }
         public int gameDuration { get; set; }
@@ -43,23 +33,15 @@ namespace magisterka2old
         public string gameType { get; set; }
         public string gameVersion { get; set; }
         public int mapId { get; set; }
-
-        public int ParticipantsID { get; set; }
-        [ForeignKey("ParticipantsID")]
-        public List<Participant> participants { get; set; }
+        public Participant[] participants { get; set; }
         public string platformId { get; set; }
         public int queueId { get; set; }
-        public int TeamsID { get; set; }
-        [ForeignKey("TeamsID")]
-        public List<Team> teams { get; set; }
+        public Team[] teams { get; set; }
         public string tournamentCode { get; set; }
     }
 
     public class Participant
     {
-        [Key]
-        public int Id { get; set; } // Klucz główny wymagany przez EF
-
         public int PlayerScore0 { get; set; }
         public int PlayerScore1 { get; set; }
         public int PlayerScore10 { get; set; }
@@ -78,8 +60,6 @@ namespace magisterka2old
         public int baronKills { get; set; }
         public int basicPings { get; set; }
         public int bountyLevel { get; set; }
-        public int? ChallengesId { get; set; }
-        [ForeignKey("ChallengesId")]
         public Challenges challenges { get; set; }
         public int champExperience { get; set; }
         public int champLevel { get; set; }
@@ -132,8 +112,6 @@ namespace magisterka2old
         public int magicDamageDealt { get; set; }
         public int magicDamageDealtToChampions { get; set; }
         public int magicDamageTaken { get; set; }
-        public int? MissionsId { get; set; }
-        [ForeignKey("MissionsId")]
         public Missions missions { get; set; }
         public int needVisionPings { get; set; }
         public int neutralMinionsKilled { get; set; }
@@ -145,10 +123,7 @@ namespace magisterka2old
         public int onMyWayPings { get; set; }
         public int participantId { get; set; }
         public int pentaKills { get; set; }
-
-        public int? PerksId { get; set; }
-        [ForeignKey("PerksId")]
-        public Perks Perks { get; set; }
+        public Perks perks { get; set; }
         public int physicalDamageDealt { get; set; }
         public int physicalDamageDealtToChampions { get; set; }
         public int physicalDamageTaken { get; set; }
@@ -216,9 +191,6 @@ namespace magisterka2old
 
     public class Challenges
     {
-        [Key]
-        public int ID { get; set; }
-
         public int _12AssistStreakCount { get; set; }
         public float HealFromMapSources { get; set; }
         public int InfernalScalePickup { get; set; }
@@ -235,7 +207,6 @@ namespace magisterka2old
         public int abilityUses { get; set; }
         public int acesBefore15Minutes { get; set; }
         public int alliedJungleMonsterKills { get; set; }
-        public int baronBuffGoldAdvantageOverThreshold { get; set; }
         public int baronTakedowns { get; set; }
         public int blastConeOppositeOpponentCount { get; set; }
         public float bountyGold { get; set; }
@@ -250,8 +221,6 @@ namespace magisterka2old
         public int dodgeSkillShotsSmallWindow { get; set; }
         public int doubleAces { get; set; }
         public int dragonTakedowns { get; set; }
-        public float earliestBaron { get; set; }
-        public float earliestElderDragon { get; set; }
         public int earlyLaningPhaseGoldExpAdvantage { get; set; }
         public float effectiveHealAndShielding { get; set; }
         public int elderDragonKillsWithOpposingSoul { get; set; }
@@ -263,7 +232,6 @@ namespace magisterka2old
         public int epicMonsterSteals { get; set; }
         public int epicMonsterStolenWithoutSmite { get; set; }
         public int firstTurretKilled { get; set; }
-        public float firstTurretKilledTime { get; set; }
         public int fistBumpParticipation { get; set; }
         public int flawlessAces { get; set; }
         public int fullTeamTakedown { get; set; }
@@ -271,6 +239,7 @@ namespace magisterka2old
         public int getTakedownsInAllLanesEarlyJungleAsLaner { get; set; }
         public float goldPerMinute { get; set; }
         public int hadOpenNexus { get; set; }
+        public int highestWardKills { get; set; }
         public int immobilizeAndKillWithAlly { get; set; }
         public int initialBuffCount { get; set; }
         public int initialCrabCount { get; set; }
@@ -292,8 +261,6 @@ namespace magisterka2old
         public int laneMinionsFirst10Minutes { get; set; }
         public int laningPhaseGoldExpAdvantage { get; set; }
         public int legendaryCount { get; set; }
-        
-        [NotMapped]
         public int[] legendaryItemUsed { get; set; }
         public int lostAnInhibitor { get; set; }
         public float maxCsAdvantageOnLaneOpponent { get; set; }
@@ -311,6 +278,7 @@ namespace magisterka2old
         public int perfectDragonSoulsTaken { get; set; }
         public int perfectGame { get; set; }
         public int pickKillWithAlly { get; set; }
+        public int playedChampSelectPosition { get; set; }
         public int poroExplosions { get; set; }
         public int quickCleanse { get; set; }
         public int quickFirstTurret { get; set; }
@@ -318,7 +286,6 @@ namespace magisterka2old
         public int riftHeraldTakedowns { get; set; }
         public int saveAllyFromDeath { get; set; }
         public int scuttleCrabKills { get; set; }
-        public float shortestTimeToAceFromFirstTakedown { get; set; }
         public int skillshotsDodged { get; set; }
         public int skillshotsHit { get; set; }
         public int snowballsHit { get; set; }
@@ -354,16 +321,17 @@ namespace magisterka2old
         public float earliestDragonTakedown { get; set; }
         public int junglerKillsEarlyJungle { get; set; }
         public int killsOnLanersEarlyJungleAsJungler { get; set; }
+        public int baronBuffGoldAdvantageOverThreshold { get; set; }
+        public float earliestBaron { get; set; }
+        public float firstTurretKilledTime { get; set; }
         public int highestChampionDamage { get; set; }
-        public int highestCrowdControlScore { get; set; }
-        public int highestWardKills { get; set; }
         public int soloTurretsLategame { get; set; }
+        public int fasterSupportQuestCompletion { get; set; }
+        public int highestCrowdControlScore { get; set; }
     }
 
     public class Missions
     {
-        public int ID;
-        public int ParticipantId { get; set; }
         public int playerScore0 { get; set; }
         public int playerScore1 { get; set; }
         public int playerScore2 { get; set; }
@@ -380,19 +348,12 @@ namespace magisterka2old
 
     public class Perks
     {
-        public int ID;
-        public int ParticipantId { get; set; }
-
-        public int StatPerksID { get; set; }
-        [NotMapped]
         public Statperks statPerks { get; set; }
-        [NotMapped]
         public Style[] styles { get; set; }
     }
 
     public class Statperks
     {
-        public int ID;
         public int defense { get; set; }
         public int flex { get; set; }
         public int offense { get; set; }
@@ -400,7 +361,6 @@ namespace magisterka2old
 
     public class Style
     {
-        public int ID;
         public string description { get; set; }
         public Selection[] selections { get; set; }
         public int style { get; set; }
@@ -408,7 +368,6 @@ namespace magisterka2old
 
     public class Selection
     {
-        public int ID;
         public int perk { get; set; }
         public int var1 { get; set; }
         public int var2 { get; set; }
@@ -417,164 +376,100 @@ namespace magisterka2old
 
     public class Team
     {
-        [Key]
-        public int ID { get; set; }  // Nadal zgodne z EF jako klucz główny
-
-        public List<Ban> bans { get; set; }
+        public Ban[] bans { get; set; }
         public Feats feats { get; set; }
         public Objectives objectives { get; set; }
         public int teamId { get; set; }
         public bool win { get; set; }
     }
 
-    [JsonConverter(typeof(FeatsConverter))]
     public class Feats
     {
-        [Key]
-        public int ID { get; set; }
-
-        public int EPIC_MONSTER_KILL_featState { get; set; }
-        public int FIRST_BLOOD_featState { get; set; }
-        public int FIRST_TURRET_featState { get; set; }
+        public EPIC_MONSTER_KILL EPIC_MONSTER_KILL { get; set; }
+        public FIRST_BLOOD FIRST_BLOOD { get; set; }
+        public FIRST_TURRET FIRST_TURRET { get; set; }
     }
 
     public class EPIC_MONSTER_KILL
     {
-        public int ID;
         public int featState { get; set; }
     }
 
     public class FIRST_BLOOD
     {
-        public int ID;
         public int featState { get; set; }
     }
 
     public class FIRST_TURRET
     {
-        public int ID;
         public int featState { get; set; }
     }
 
-    [JsonConverter(typeof(ObjectivesConverter))]
     public class Objectives
     {
-        [Key]
-        public int ID { get; set; }
+        public Atakhan atakhan { get; set; }
+        public Baron baron { get; set; }
+        public Champion champion { get; set; }
+        public Dragon dragon { get; set; }
+        public Horde horde { get; set; }
+        public Inhibitor inhibitor { get; set; }
+        public Riftherald riftHerald { get; set; }
+        public Tower tower { get; set; }
+    }
 
-        public bool atakhan_first { get; set; }
-        public int atakhan_kills { get; set; }
+    public class Atakhan
+    {
+        public bool first { get; set; }
+        public int kills { get; set; }
+    }
 
-        public bool baron_first { get; set; }
-        public int baron_kills { get; set; }
+    public class Baron
+    {
+        public bool first { get; set; }
+        public int kills { get; set; }
+    }
 
-        public bool champion_first { get; set; }
-        public int champion_kills { get; set; }
+    public class Champion
+    {
+        public bool first { get; set; }
+        public int kills { get; set; }
+    }
 
-        public bool dragon_first { get; set; }
-        public int dragon_kills { get; set; }
+    public class Dragon
+    {
+        public bool first { get; set; }
+        public int kills { get; set; }
+    }
 
-        public bool horde_first { get; set; }
-        public int horde_kills { get; set; }
+    public class Horde
+    {
+        public bool first { get; set; }
+        public int kills { get; set; }
+    }
 
-        public bool inhibitor_first { get; set; }
-        public int inhibitor_kills { get; set; }
+    public class Inhibitor
+    {
+        public bool first { get; set; }
+        public int kills { get; set; }
+    }
 
-        public bool riftHerald_first { get; set; }
-        public int riftHerald_kills { get; set; }
+    public class Riftherald
+    {
+        public bool first { get; set; }
+        public int kills { get; set; }
+    }
 
-        public bool tower_first { get; set; }
-        public int tower_kills { get; set; }
+    public class Tower
+    {
+        public bool first { get; set; }
+        public int kills { get; set; }
     }
 
     public class Ban
     {
-        [Key]
-        public int ID { get; set; }
         public int championId { get; set; }
         public int pickTurn { get; set; }
     }
 
 
-    public class FeatsConverter : JsonConverter<Feats>
-    {
-        public override Feats ReadJson(JsonReader reader, Type objectType, Feats existingValue, bool hasExistingValue, JsonSerializer serializer)
-        {
-            JObject obj = JObject.Load(reader);
-
-            return new Feats
-            {
-                EPIC_MONSTER_KILL_featState = (int?)obj["EPIC_MONSTER_KILL"]?["featState"] ?? 0,
-                FIRST_BLOOD_featState = (int?)obj["FIRST_BLOOD"]?["featState"] ?? 0,
-                FIRST_TURRET_featState = (int?)obj["FIRST_TURRET"]?["featState"] ?? 0
-            };
-        }
-
-        public override void WriteJson(JsonWriter writer, Feats value, JsonSerializer serializer)
-        {
-            var obj = new JObject
-            {
-                ["EPIC_MONSTER_KILL"] = new JObject { ["featState"] = value.EPIC_MONSTER_KILL_featState },
-                ["FIRST_BLOOD"] = new JObject { ["featState"] = value.FIRST_BLOOD_featState },
-                ["FIRST_TURRET"] = new JObject { ["featState"] = value.FIRST_TURRET_featState }
-            };
-
-            obj.WriteTo(writer);
-        }
-    }
-
-    public class ObjectivesConverter : JsonConverter<Objectives>
-    {
-        public override Objectives ReadJson(JsonReader reader, Type objectType, Objectives existingValue, bool hasExistingValue, JsonSerializer serializer)
-        {
-            JObject obj = JObject.Load(reader);
-
-            return new Objectives
-            {
-                atakhan_first = (bool?)obj["atakhan"]?["first"] ?? false,
-                atakhan_kills = (int?)obj["atakhan"]?["kills"] ?? 0,
-
-                baron_first = (bool?)obj["baron"]?["first"] ?? false,
-                baron_kills = (int?)obj["baron"]?["kills"] ?? 0,
-
-                champion_first = (bool?)obj["champion"]?["first"] ?? false,
-                champion_kills = (int?)obj["champion"]?["kills"] ?? 0,
-
-                dragon_first = (bool?)obj["dragon"]?["first"] ?? false,
-                dragon_kills = (int?)obj["dragon"]?["kills"] ?? 0,
-
-                horde_first = (bool?)obj["horde"]?["first"] ?? false,
-                horde_kills = (int?)obj["horde"]?["kills"] ?? 0,
-
-                inhibitor_first = (bool?)obj["inhibitor"]?["first"] ?? false,
-                inhibitor_kills = (int?)obj["inhibitor"]?["kills"] ?? 0,
-
-                riftHerald_first = (bool?)obj["riftHerald"]?["first"] ?? false,
-                riftHerald_kills = (int?)obj["riftHerald"]?["kills"] ?? 0,
-
-                tower_first = (bool?)obj["tower"]?["first"] ?? false,
-                tower_kills = (int?)obj["tower"]?["kills"] ?? 0
-            };
-        }
-
-        public override void WriteJson(JsonWriter writer, Objectives value, JsonSerializer serializer)
-        {
-            JObject obj = new JObject
-            {
-                ["atakhan"] = new JObject { ["first"] = value.atakhan_first, ["kills"] = value.atakhan_kills },
-                ["baron"] = new JObject { ["first"] = value.baron_first, ["kills"] = value.baron_kills },
-                ["champion"] = new JObject { ["first"] = value.champion_first, ["kills"] = value.champion_kills },
-                ["dragon"] = new JObject { ["first"] = value.dragon_first, ["kills"] = value.dragon_kills },
-                ["horde"] = new JObject { ["first"] = value.horde_first, ["kills"] = value.horde_kills },
-                ["inhibitor"] = new JObject { ["first"] = value.inhibitor_first, ["kills"] = value.inhibitor_kills },
-                ["riftHerald"] = new JObject { ["first"] = value.riftHerald_first, ["kills"] = value.riftHerald_kills },
-                ["tower"] = new JObject { ["first"] = value.tower_first, ["kills"] = value.tower_kills }
-            };
-
-            obj.WriteTo(writer);
-        }
-    }
-
 }
-
-
