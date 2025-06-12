@@ -21,7 +21,7 @@ namespace magisterka2
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            options.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=MagisterkaDb;Trusted_Connection=True;");
+            options.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=MagisterkaDb;Trusted_Connection=True;", opts => opts.CommandTimeout(120));
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -198,7 +198,7 @@ namespace magisterka2
                     // Jeśli np. chcesz przypisać pierwszą linię jako klucz API:
                     if (klucze.Length > 0)
                     {
-                        Api_Key = klucze[Current_Key];
+                        Api_Key = klucze[0];
                         Console.WriteLine("Klucz API: " + Api_Key);
                         Current_Key++;
                         if(Current_Key>= klucze.Length) { Current_Key = 0; }    
@@ -419,6 +419,66 @@ namespace magisterka2
             Console.WriteLine($"Statystyki zapisane do pliku: {filePath}");
         }
 
+        public static void AnalyzeSecondaryFieldsByRankToFile(GameDbContext db, string filePath)
+        {
+            var data = db.Secondary.ToList();
+
+            var numericProps = typeof(Secondary).GetProperties()
+                .Where(p => p.PropertyType == typeof(int) ||
+                            p.PropertyType == typeof(double) ||
+                            p.PropertyType == typeof(float) ||
+                            p.PropertyType == typeof(long) ||
+                            p.PropertyType == typeof(decimal))
+                .ToList();
+
+            var sb = new StringBuilder();
+
+            // Grupujemy dane po Rank (zakładam, że to np. enum lub string)
+            var groups = data.GroupBy(d => d.rank);
+
+            foreach (var group in groups)
+            {
+                string rankName = group.Key.ToString();
+                int groupCount = group.Count();
+                foreach (var prop in numericProps)
+                {
+                    var values = group
+                        .Select(item => prop.GetValue(item))
+                        .Where(v => v != null)
+                        .Select(v => Convert.ToDouble(v))
+                        .ToList();
+
+                    if (values.Count == 0)
+                        continue;
+
+                    double average = values.Average();
+                    double stddev = Math.Sqrt(values.Select(v => Math.Pow(v - average, 2)).Average());
+                    double min = values.Min();
+                    double max = values.Max();
+
+                    var result = new
+                    {
+                        Rank = rankName,
+                        Field = prop.Name,
+                        Count = values.Count, // <- liczba elementów w tej konkretnej analizowanej kolumnie
+                        GroupSize = groupCount, // <- liczba rekordów w tej randze
+                        Average = average,
+                        StdDev = stddev,
+                        Min = min,
+                        Max = max
+                    };
+
+                    string jsonLine = JsonConvert.SerializeObject(result);
+                    sb.AppendLine(jsonLine);
+
+                    Console.WriteLine($"Zapisano statystyki dla rangi {rankName}, pola {prop.Name}");
+                }
+            }
+
+            File.WriteAllText(filePath, sb.ToString(), Encoding.UTF8);
+            Console.WriteLine($"Statystyki według rangi zapisane do pliku: {filePath}");
+        }
+
         public async Task<Rank> FindRankByPUUID(string puuid, int i , int max)
         {
             //FixApi();
@@ -456,10 +516,10 @@ namespace magisterka2
                         }
                         else
                         {
-                            Console.WriteLine($"{DateTime.Now.ToString("HH:mm:ss")}:Match Request failed with status code: {response.StatusCode}. Retrying in 30 seconds...");
+                            Console.WriteLine($"{DateTime.Now.ToString("HH:mm:ss")}:Match Request failed with status code: {response.StatusCode}. Retrying in 2 minutes...");
                             FixApi();
                             Discord.SetRichPresence("Rangi Graczy", "Czekam", i, max);
-                            await Task.Delay(4 * 30000); // 30 seconds
+                            await Task.Delay(4 * 30000); // 2 minut
                         }
                     }
                 }
@@ -489,14 +549,18 @@ namespace magisterka2
             int batchSize = 2000;
             int i = 0;
 
+            var playerRanksDict = await db.PlayerRanks
+                .ToDictionaryAsync(x => x.puuid, x => x.Rank);
+
             await foreach (var data in db.Primary.AsAsyncEnumerable())
             {
                 var key = (data.matchId, data.puuid);
 
                 if (!allExistingKeys.Contains(key))
                 {
-                    buffer.Add(new Secondary(db.PlayerRanks.FirstOrDefault(x => x.puuid == data.puuid).Rank, data));
-                    allExistingKeys.Add(key); // dodaj też do cache'u żeby nie dodać 2x w buforze
+                    var rank = playerRanksDict.TryGetValue(data.puuid, out var r) ? r : Rank.NONE;
+                    buffer.Add(new Secondary(rank, data));
+                    allExistingKeys.Add(key);
                     i++;
                     Discord.SetRichPresence("Secondary Data", "Przetwarzam", i, max);
                 }
@@ -509,12 +573,97 @@ namespace magisterka2
                     Console.WriteLine($"Zapisano {batchSize} rekordów (linia {i})");
                 }
             }
+
         }
+
+        public async Task GetSecondaryData2(GameDbContext db)
+        {
+            var allExistingKeys = new HashSet<(string matchId, string puuid)>(
+                db.Secondary.AsNoTracking()
+                    .Select(p => new { p.matchId, p.puuid })
+                    .AsEnumerable()
+                    .Select(x => (x.matchId, x.puuid))
+            );
+
+            int batchSize = 2000;
+            int processed = 0;
+            int processed_new = 0;
+
+            var playerRanksDict = await db.PlayerRanks
+                .ToDictionaryAsync(x => x.puuid, x => x.Rank);
+
+            string lastMatchId = null;
+            string lastPuuid = null;
+            int count = await db.Primary.AsNoTracking().CountAsync();
+            int count_secondary = allExistingKeys.Count();
+            Discord.SetRichPresenceUpdate("Secondary Data", "Przetwarzam", processed, count); // total możesz wyliczyć osobno
+
+            var lastKey = await db.Secondary
+    .OrderByDescending(x => x.matchId)
+    .ThenByDescending(x => x.puuid)
+    .Select(x => new { x.matchId, x.puuid })
+    .FirstOrDefaultAsync();
+            lastMatchId = lastKey.matchId;
+            lastPuuid = lastKey.puuid;
+            while (true)
+            {
+
+                Console.WriteLine($"{DateTime.Now.ToString("HH:mm:ss")} Rozpoczynam querry Secondary count: {count_secondary} ProcessedCount {processed} Procdessed new: {processed_new}+");
+                var query = db.Primary.AsNoTracking().AsQueryable();
+
+                if (lastMatchId != null && lastPuuid != null)
+                {
+                    query = query.Where(x =>
+                        string.Compare(x.matchId, lastMatchId) > 0 ||
+                        (x.matchId == lastMatchId && string.Compare(x.puuid, lastPuuid) > 0));
+                }
+
+                var batch = await query.AsNoTracking()
+                    .OrderBy(x => x.matchId)
+                    .ThenBy(x => x.puuid)
+                    .Take(batchSize)
+                    .ToListAsync();
+
+                if (batch.Count == 0)
+                    break;
+                Console.WriteLine($"{DateTime.Now.ToString("HH:mm:ss")} Zakończono querry bufferuje batch {processed} : {processed_new}+");
+                List<Secondary> buffer = new();
+
+                foreach (var data in batch)
+                {
+                    var key = (data.matchId, data.puuid);
+
+                    if (!allExistingKeys.Contains(key))
+                    {
+                        var rank = playerRanksDict.TryGetValue(data.puuid, out var r) ? r : Rank.NONE;
+                        buffer.Add(new Secondary(rank, data));
+                        allExistingKeys.Add(key);
+                        processed_new++;
+                        
+                    }
+                    processed++;
+                    // Zaktualizuj ostatni klucz do paginacji
+                    lastMatchId = data.matchId;
+                    lastPuuid = data.puuid;
+                }
+                Discord.SetRichPresenceUpdate("Secondary Data", "Przetwarzam", processed, count-count_secondary); // total możesz wyliczyć osobno
+                if (buffer.Any())
+                {
+                    db.Secondary.AddRange(buffer);
+                    await db.SaveChangesAsync();
+                    Console.WriteLine($"{DateTime.Now.ToString("HH:mm:ss")} Zapisano {buffer.Count} rekordów (łącznie {processed})");
+                    db.ChangeTracker.Clear();
+                }
+            }
+        }
+
     }
 
 
 
-    }
+
+
+}
 
 
     public enum Rank

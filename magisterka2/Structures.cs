@@ -1129,13 +1129,17 @@ namespace magisterka2
     public class PlayerRank
     {
         public string? puuid { get; set; }
-        public Rank Rank { get; set; }  
+        public Rank Rank { get; set; }
+        public string? riotIdGameName { get; set; }
+        public string? riotIdTagline { get; set; }
 
-        public PlayerRank(string? puuid, Rank rank)
+        public PlayerRank(string? puuid, Rank rank, string? riotIdGameName, string? riotIdTagline)
         {
             this.puuid = puuid;
             Rank = rank;
-        }
+            this.riotIdGameName = riotIdGameName;
+            this.riotIdTagline = riotIdTagline;
+}
     }
 
 
