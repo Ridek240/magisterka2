@@ -40,8 +40,8 @@ class Program
         
         //Diagnostics.RankValues(db);
         Diagnostics.Calculations(db);
-        
-        
+        //Diagnostics.RankValues(db);
+
         var unikalneNazwy = db.DiagnosticResults
     .Select(p => p.MPCRank)
     .Distinct()

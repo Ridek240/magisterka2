@@ -6,6 +6,9 @@ using Smile;
 using Microsoft.EntityFrameworkCore;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json.Linq;
+using System.Linq.Expressions;
+using DiscordRPC.Message;
 
 namespace magisterka2
 {
@@ -190,51 +193,123 @@ namespace magisterka2
             }
             db.SaveChanges ();
         }
-
+        static string path = @"C:\magisterka\Bayes\NewTest\";
         public static void Calculations(GameDbContext db)
         {
-            var sumaPerFile = db.DiagnosticResults
-    .GroupBy(r => r.Node)
-    .Select(g => new
-    {
-        Node = g.Key,
-        Suma = g.Sum(x => x.MPCRank)
-    }).OrderBy(r=>r.Suma)
-    .ToList();
-            foreach (var suma in sumaPerFile)
-            {
-                Console.WriteLine($"{suma.Node} {suma.Suma}");
 
-            }
-            Console.WriteLine("\n");
-            sumaPerFile = db.DiagnosticResults
-.GroupBy(r => r.Node)
-.Select(g => new
+            List<NodeSumDto> FileSumMPC = AllCodeAnalitics(db, x => x.MPCRank);
+            List<NodeSumDto> FileSumCE = AllCodeAnalitics(db, x => x.CERank);
+            List<NodeSumDto> FileSumNCE = AllCodeAnalitics(db, x => x.NCERank);
+
+
+            List<NodeSumDto> suma_bs_MPC = GetDataByBayesType(db, "-bs", x => x.MPCRank);
+            List<NodeSumDto> suma_tan_MPC = GetDataByBayesType(db, "-tan", x => x.MPCRank);
+            List<NodeSumDto> suma_naive_MPC = GetDataByBayesType(db, "-naive", x => x.MPCRank);            
+            List<NodeSumDto> suma_bs_CE = GetDataByBayesType(db, "-bs", x => x.CERank);
+            List<NodeSumDto> suma_tan_CE = GetDataByBayesType(db, "-tan", x => x.CERank);
+            List<NodeSumDto> suma_naive_CE = GetDataByBayesType(db, "-naive", x => x.CERank);            
+            List<NodeSumDto> suma_bs_NCE = GetDataByBayesType(db, "-bs", x => x.NCERank);
+            List<NodeSumDto> suma_tan_NCE = GetDataByBayesType(db, "-tan", x => x.NCERank);
+            List<NodeSumDto> suma_naive_NCE = GetDataByBayesType(db, "-naive", x => x.NCERank);
+
+            int maxLength = new[]
 {
-Node = g.Key,
-Suma = g.Sum(x => x.CERank)
-}).OrderBy(r => r.Suma)
-.ToList();
-            foreach (var suma in sumaPerFile)
+    FileSumMPC.Count, FileSumCE.Count, FileSumNCE.Count,
+    suma_bs_MPC.Count, suma_tan_MPC.Count, suma_naive_MPC.Count,
+    suma_bs_CE.Count, suma_tan_CE.Count, suma_naive_CE.Count,
+    suma_bs_NCE.Count, suma_tan_NCE.Count, suma_naive_NCE.Count
+}.Max();
+            int columnWidth = 43;
+            string output = "";
+            //Console.WriteLine 
+                output +=(
+                $"{(nameof(FileSumMPC)).PadRight(columnWidth)}" +
+                $"{(nameof(FileSumCE)).PadRight(columnWidth)}" +
+                $"{(nameof(FileSumNCE)).PadRight(columnWidth)}" +
+                $"{(nameof(suma_bs_MPC)).PadRight(columnWidth)}" +
+                $"{(nameof(suma_tan_MPC)).PadRight(columnWidth)}" +
+                $"{(nameof(suma_naive_MPC)).PadRight(columnWidth)}" +
+                $"{(nameof(suma_bs_CE)).PadRight(columnWidth)}" +
+                $"{(nameof(suma_tan_CE)).PadRight(columnWidth)}" +
+                $"{(nameof(suma_naive_CE)).PadRight(columnWidth)}" +
+                $"{(nameof(suma_bs_NCE)).PadRight(columnWidth)}" +
+                $"{(nameof(suma_tan_NCE)).PadRight(columnWidth)}" +
+                $"{(nameof(suma_naive_NCE)).PadRight(columnWidth)}\n" 
+                );
+            for (int i = 0; i < maxLength; i++)
             {
-                Console.WriteLine($"{suma.Node} {suma.Suma}");
+                //Console.WriteLine
+                output += (
+                    $"{(FileSumMPC.ElementAtOrDefault(i)?.ToString() ?? "").PadRight(columnWidth)}" +
+                    $"{(FileSumCE.ElementAtOrDefault(i)?.ToString() ?? "").PadRight(columnWidth)}" +
+                    $"{(FileSumNCE.ElementAtOrDefault(i)?.ToString() ?? "").PadRight(columnWidth)}" +
+                    $"{(suma_bs_MPC.ElementAtOrDefault(i)?.ToString() ?? "").PadRight(columnWidth)}" +
+                    $"{(suma_tan_MPC.ElementAtOrDefault(i)?.ToString() ?? "").PadRight(columnWidth)}" +
+                    $"{(suma_naive_MPC.ElementAtOrDefault(i)?.ToString() ?? "").PadRight(columnWidth)}" +
+                    $"{(suma_bs_CE.ElementAtOrDefault(i)?.ToString() ?? "").PadRight(columnWidth)}" +
+                    $"{(suma_tan_CE.ElementAtOrDefault(i)?.ToString() ?? "").PadRight(columnWidth)}" +
+                    $"{(suma_naive_CE.ElementAtOrDefault(i)?.ToString() ?? "").PadRight(columnWidth)}" +
+                    $"{(suma_bs_NCE.ElementAtOrDefault(i)?.ToString() ?? "").PadRight(columnWidth)}" +
+                    $"{(suma_tan_NCE.ElementAtOrDefault(i)?.ToString() ?? "").PadRight(columnWidth)}" +
+                    $"{(suma_naive_NCE.ElementAtOrDefault(i)?.ToString() ?? "").PadRight(columnWidth)}\n"
 
+                    );
             }
-            Console.WriteLine("\n");
-            sumaPerFile = db.DiagnosticResults
-.GroupBy(r => r.Node)
-.Select(g => new
-{
-Node = g.Key,
-Suma = g.Sum(x => x.NCERank)
-}).OrderBy(r => r.Suma)
-.ToList();
-            foreach (var suma in sumaPerFile)
-            {
-                Console.WriteLine($"{suma.Node} {suma.Suma}");
+            File.WriteAllText($@"{path}\data.txt", output);
+            Console.WriteLine(output);
 
-            }
+            //List<NodeSum2Dto> suma_bs_target_MPC = GetItemByGroup(db, "-bs", x => x.MPCRank);
         }
+
+        private static List<NodeSumDto> AllCodeAnalitics(GameDbContext db, Func<DiagnosticResult, double> selector)
+        {
+            return db.DiagnosticResults
+.GroupBy(r => r.Node).AsEnumerable()
+.Select(g => new NodeSumDto
+{
+    Node = g.Key,
+    Suma = g.Sum(selector)
+}).OrderBy(r => r.Suma)
+.ToList();
+        }
+
+        private static List<NodeSumDto> GetDataByBayesType(GameDbContext db, string Ending, Func<DiagnosticResult, double> selector)
+        {
+            var result = db.DiagnosticResults
+                .Where(r => r.FileName.Contains(Ending))
+                .AsEnumerable() // 🔹 przenosi do pamięci .NET
+                .GroupBy(r => r.Node)
+                .Select(g => new NodeSumDto
+                {
+                    Node = g.Key,
+                    Suma = g.Sum(selector)
+                })
+                .OrderBy(r => r.Suma)
+                .ToList();
+            return result;
+        }
+
+        private static List<NodeSum2Dto> GetItemByGroup(GameDbContext db, string Ending, Func<DiagnosticResult, double> selector)
+        {
+            var grupy = db.DiagnosticResults
+    .Where(r => r.FileName != null && r.FileName.Contains(Ending))
+    .GroupBy(r => r.TargetValue)
+    .Select(g => new NodeSum2Dto
+    {
+        D = g.Key,
+        Nodes = g.GroupBy(x => x.Node)
+                 .Select(ng => new NodeSumDto
+                 {
+                     Node = ng.Key,
+                     Suma = ng.Sum(selector)
+                 })
+                 .OrderByDescending(n => n.Suma)
+                 .ToList()
+    })
+    .ToList();
+                return grupy;
+        }
+
         public static List<DiagnosticResult> AnalyzeAndSaveModel_Metrics(string modelPath, string targetNode, GameDbContext db)
         {
             //using var db = new DiagnosticDbContext();
@@ -428,5 +503,21 @@ Suma = g.Sum(x => x.NCERank)
         public int NCERank { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    }
+    public class NodeSumDto
+    {
+        public string Node { get; set; }
+        public double Suma { get; set; }
+
+        public override string ToString()
+        {
+            return Node.ToString();
+        }
+    }
+
+    public class NodeSum2Dto
+    {
+        public string D { get; set; }
+        public List<NodeSumDto> Nodes { get; set;}
     }
 }
