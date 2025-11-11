@@ -1,0 +1,668 @@
+secondary average 5 bin numbered tan
+
+total Time Spent Dead 
+on My WayPings
+multi Turret Rift HeraldCount
+magicDamage Taken
+first Blood Assist
+killsOnOtherLanes EarlyJungleAs Laner
+maxKill Deficit
+Heal From Map Sources
+vision Score AdvantageLaneOpponent
+total HealsOn Teammates
+takedownsInAlcove
+twenty Minions In3SecondsCount
+visionWards BoughtInGame
+multikills
+deaths
+deaths By EnemyChamps
+quick Solo Kills
+first Blood Kill
+summonerLevel
+objectives Stolen
+consumables Purchased
+quickCleanse
+bountyGold
+getBack Pings
+trueDamage Dealt ToChampions
+outnumbered Kills
+kills NearEnemy Turret
+epic MonsterSteals
+inhibitor Takedowns
+legendaryCount
+wardsGuarded
+game Length
+timePlayed
+quadra Kills
+takedowns Before Jungle Minion Spawn
+ward Takedowns
+takedownsInEnemy Fountain
+vision Score Per Minute
+skillshots Dodged
+enemy MissingPings 
+enemy Vision Pings
+
+secondary average 5 bin numbered naive
+
+
+spell2Casts 
+total Heal
+landSkill Shots EarlyGame
+HealFrom Map Sources 
+damage Dealt ToObjectives
+gold Spent
+kills UnderOwn Turret
+vision Score Per Minute 
+visionWards BoughtInGame 
+damage Per Minute
+allied Jungle MonsterKills 
+buffs Stolen
+earliest Dragon Takedown
+effective Heal And Shielding 
+enemyChampion Immobilizations 
+first TowerAssist
+jungleCs Before 10Minutes 
+magic Damage Dealt
+magic Damage Dealt ToChampions 
+more Enemy Jungle ThanOpponent 
+multikills AfterAggressive Flash
+neutral Minions Killed
+summoner 1Casts
+takedowns FirstXMinutes
+total HealsOn Teammates
+total Minions Killed
+true Damage Taken
+twenty Minions In3SecondsCount 
+visionScore
+consumables Purchased
+detectorWards Placed 
+total TimeCCDealt
+visionClearedPings
+visionScore Advantage LaneOpponent 
+pick Kill With Ally
+need Vision Pings
+epic MonsterKills Near Enemy Jungler 
+total Damage ShieldedOn Teammates 
+inhibitor Takedowns 
+itemsPurchased
+inhibitors Lost
+
+average 5 reduced tan
+
+multi Turret Rift HeraldCount
+wards Placed
+first Blood Kill
+get Takedowns In All Lanes Early Jungle As Laner
+highestChampion Damage
+First Blood Assist
+kTurrets DestroyedBefore Plates Fall
+need VisionPings
+spell 1Casts
+initial BuffCount
+killsOnLaners Early Jungle AsJungler
+perfect Dragon Souls Taken
+lane Minions First 10Minutes
+vision Score Per Minute
+atakhan_first
+atakhan
+takedowns In Enemy Fountain
+enemy Jungle MonsterKills
+skillshots Dodged
+killsOnOtherLanes Early Jungle As Laner
+killing Sprees
+outnumbered Kills
+ability Uses
+magicDamage Taken
+total Heal
+dodge Skill Shots Small Window
+spell 3Casts
+maxKill Deficit
+enemy Vision Pings
+land Skill Shots EarlyGame
+all InPings
+kill After Hidden With Ally
+spell4Casts
+total TimeCCDealt
+skillshots Hit
+summonerLevel
+visionCleared Pings
+vision Score Advantage LaneOpponent
+ward Takedowns Before 20M
+controlWards Placed
+wards Killed
+
+average 5 reduced tan cross entropy normalized
+
+summonerLevel
+atakhan
+atakhan_first
+win
+horde_first
+rift Herald_first
+dragon_first
+champion_first
+tower_first
+inhibitor_first
+baron_first
+controlWard TimeCoverage In RiverOrEnemy Half
+game Ended In Surrender
+champion
+nexusLost
+first Turret Killed Time
+game Length
+timePlayed
+horde
+team Rift Herald Kills
+rift Herald
+total Time Spent Dead
+lane Minions First 10Minutes
+turrets Lost
+takedownOnFirst Turret
+tower
+goldPerMinute
+earliest Baron
+killParticipation
+First Blood Assist
+highestChampion Damage
+First Blood Kill
+deaths
+deaths By EnemyChamps
+laning Phase Gold Exp Advantage
+first Towerkill
+nexus Takedowns
+highest Crowd Control Score
+perfect Dragon Souls Taken
+vision Score Per Minute
+inhibitors Lost
+
+average 5 reduced naive Bayes
+
+multi Turret Rift HeraldCount
+first Blood Kill
+get Takedowns In All Lanes Early Jungle As Laner
+kTurrets Destroyed Before Plates Fall
+initial BuffCount
+killsOnLaners Early JungleAsJungler
+lane Minions First 10Minutes
+need Vision Pings
+perfect Dragon Souls Taken
+spell 1Casts
+dodge SkillShots SmallWindow
+enemyJungle MonsterKills
+killsOnOtherLanes Early Jungle As Laner
+landSkillShots Early Game
+magic Damage Taken
+maxKill Deficit
+skillshots Dodged
+takedowns In Enemy Fountain
+total Heal
+ability Uses
+control Wards Placed
+enemy Vision Pings
+kill AfterHidden With Ally
+killing Sprees
+outnumbered Kills
+skillshots Hit
+spell 3Casts
+summonerLevel
+ward Takedowns
+ward Takedowns Before 20M
+wards Killed
+wards Placed
+all In Pings
+total TimeCCDealt
+visionCleared Pings
+visionScore Advantage LaneOpponent
+first Blood Assist
+quickCleanse
+spell 4Casts
+takedowns AfterGaining Level Advantage
+timeCCingOthers
+
+average 5 reduced naive Bayes entropy normalized
+
+summonerLevel
+atakhan 
+atakhan_first
+win
+horde_first
+rift Herald_first
+dragon_first
+champion_first
+tower_first
+inhibitor_first
+baron_first
+controlWard TimeCoverage In RiverOrEnemy Half
+game Ended In Surrender
+champion
+nexus Lost
+first Turret Killed Time
+gameLength
+timePlayed
+horde
+team Rift Herald Kills
+rift Herald
+total Time Spent Dead
+lane Minions First 10Minutes
+turrets Lost
+takedownOnFirst Turret
+tower
+goldPerMinute
+earliest Baron
+killParticipation
+first Blood Assist
+highestChampion Damage
+deaths
+First Blood Kill
+deaths By EnemyChamps
+laning PhaseGoldExpAdvantage
+first Towerkill
+nexus Takedowns
+highestCrowdControl Score
+perfect Dragon Souls Taken
+visionScore Per Minute
+inhibitors Lost
+
+secondary 5 naive Bayes numbered max probability
+
+outnumbered Nexus Kill
+quickCleanse
+summonerLevel
+solo Baron Kills
+detectorWards Placed
+control Wards Placed
+lane Minions First 10Minutes
+controlWard TimeCoverage In RiverOrEnemy Half
+visionWards Bought InGame
+earliest Baron
+elderDragon Multikills
+enemyVision Pings
+total Minions Killed
+wards Killed
+get TakedownsInAll Lanes Early Jungle As Laner 
+ward Takedowns
+multi Turret Rift HeraldCount
+more Enemy Jungle ThanOpponent
+on My Way Pings
+champion
+hold Pings
+ward Takedowns Before 20M
+timePlayed
+gameLength
+takedownsInEnemy Fountain
+team Elder Dragon Kills
+perfectGame
+goldPerMinute
+eligibleForProgression
+commandPings
+stealth Wards Placed
+team Early Surrendered
+save Ally From Death
+total Time Spent Dead
+game Ended In Early Surrender
+elderDragon Kills WithOpposing Soul
+two WardsOne SweeperCount
+effective Heal And Shielding
+total Damage Dealt
+killsOnOtherLanes EarlyJungleAsLaner
+epic MonsterKills Within 30Seconds Of Spawn
+
+secondary 5 naive Bayes numbered entropy normalized
+
+summonerLevel
+lane Minions First 10Minutes
+wards Killed
+ward Takedowns
+total Minions Killed
+enemy Vision Pings
+visionWards Bought InGame
+detectorWards Placed
+controlWards Placed
+ward Takedowns Before 20M
+controlWard TimeCoverage In RiverOrEnemy Half
+on MyWayPings
+stealth Wards Placed
+goldPerMinute
+earliest Baron
+commandPings
+timePlayed
+gameLength
+champion
+total Time Spent Dead
+enemy Missing Pings
+vision Score Per Minute
+items Purchased
+totalDamage Dealt
+killParticipation
+ability Uses
+deaths
+deaths By EnemyChamps
+horde
+void MonsterKill
+takedowns First XMinutes
+consumablesPurchased
+magic Damage Dealt
+assist Me Pings
+spell 1Casts
+Full Team Takedown
+magic Damage Taken
+spell 3Casts
+atakhan
+atakhan_first
+skillshots Dodged
+
+secondary 5 tan numered max propability
+
+quickCleanse
+outnumbered Nexus Kill
+summonerLevel
+solo Baron Kills
+detectorWards Placed
+controlWards Placed
+lane Minions First 10Minutes
+controlWard TimeCoverage In RiverOrEnemy Half
+vision Wards Bought InGame
+earliest Baron
+elderDragon Multikills
+enemy Vision Pings
+total Minions Killed
+wards Killed
+getTakedowns In All Lanes Early Jungle As Laner
+ward Takedowns
+multi Turret Rift HeraldCount
+more EnemyJungle ThanOpponent
+holdPings
+on My Way Pings
+champion
+ward Takedowns Before 20M
+timePlayed
+gameLength
+takedownsInEnemy Fountain
+team ElderDragon Kills
+perfectGame
+eligible ForProgression
+goldPerMinute
+commandPings
+stealth Wards Placed
+teamEarly Surrendered
+save Ally From Death
+total Time Spent Dead
+game Ended In Early Surrender
+elderDragon Kills WithOpposing Soul
+two WardsOne SweeperCount
+effective HealAndShielding
+total Damage Dealt
+killsOnOtherLanes EarlyJungleAs Laner
+epic MonsterKills Within 30Seconds Of Spawn
+
+secondary 5 tan numered entropy normalized
+
+summonerLevel
+lane Minions First 10Minutes
+wards Killed
+ward Takedowns
+total Minions Killed
+enemy Vision Pings
+visionWards BoughtInGame
+detectorWards Placed
+controlWards Placed
+ward Takedowns Before 20M
+controlWard TimeCoverage In RiverOrEnemy Half 0.005
+on MyWayPings
+stealth Wards Placed
+goldPerMinute
+earliest Baron
+commandPings
+timePlayed
+gameLength
+champion
+total Time Spent Dead
+enemy MissingPings
+vision Score Per Minute
+items Purchased
+totalDamage Dealt
+killParticipation
+ability Uses
+deaths
+deaths By EnemyChamps
+horde
+void MonsterKill
+takedowns FirstXMinutes
+consumables Purchased
+magicDamage Dealt
+assist Me Pings
+spell 1Casts
+Full Team Takedown
+magic Damage Taken
+spell3Casts
+atakhan_first
+atakhan
+skillshots Dodged
+
+secondary 5 reduced naive bayes max propability
+
+summonerLevel 
+quickCleanse 
+solo Baron Kills 
+enemy Vision Pings
+lane Minions First 10Minutes
+detectorWards Placed
+control Wards Placed
+control Ward TimeCoverage In RiverOrEnemyHalf 
+earliest Baron
+visionWards Bought InGame
+wards Killed
+getTakedowns In All Lanes Early Jungle As Laner
+outnumbered Nexus Kill
+total Minions Killed
+elderDragon Multikills
+hold Pings
+ward Takedowns
+more Enemy Jungle ThanOpponent
+eligibleForProgression
+twenty Minions In3SecondsCount
+on My Way Pings
+team Early Surrendered
+multi Turret Rift HeraldCount
+perfectGame
+game Ended In Early Surrender
+ward Takedowns Before 20M
+champion
+team Rift Herald Kills
+rift Herald
+timePlayed
+gameLength
+team ElderDragon Kills
+goldPerMinute
+takedownsInEnemy Fountain
+commandPings
+total Time Spent Dead
+elderDragon Kills WithOpposing Soul
+stealthWards Placed
+save Ally From Death
+killsOnOtherLanes EarlyJungle AsLaner
+deaths By EnemyChamps
+
+secondary 5 reduced naive bayes entropy normalized
+
+summonerLevel
+lane Minions First 10Minutes
+wards Killed
+ward Takedowns
+enemyVision Pings
+total Minions Killed
+visionWards BoughtInGame
+ward Takedowns Before 20M
+on MyWayPings
+detectorWards Placed
+controlWards Placed
+control Ward TimeCoverage In RiverOrEnemy Half
+stealth Wards Placed
+goldPerMinute
+commandPings
+earliest Baron
+timePlayed
+gameLength
+champion
+total Time Spent Dead
+enemy Missing Pings
+vision Score Per Minute
+killParticipation
+takedowns FirstXMinutes
+deaths
+deaths By EnemyChamps
+ability Uses
+total Damage Dealt
+items Purchased
+void MonsterKill
+consumables Purchased
+horde
+atakhan
+atakhan_first
+assist Me Pings
+magicDamage Taken
+magicDamage Dealt
+Full Team Takedown
+spell3Casts
+spell 1Casts
+summoner 1Casts
+
+secondary 5 reduced tan max propability
+
+summonerLevel 
+quickCleanse
+solo Baron Kills
+enemy Vision Pings
+lane Minions First 10Minutes
+detectorWards Placed
+controlWards Placed
+controlWard TimeCoverage In RiverOrEnemy Half
+earliest Baron
+visionWards Bought InGame
+wards Killed
+get TakedownsInAll Lanes Early Jungle As Laner
+total Minions Killed
+elderDragon Multikills
+holdPings
+ward Takedowns
+eligibleForProgression
+on MyWayPings
+twenty Minions In3SecondsCount
+more Enemy Jungle ThanOpponent
+teamEarly Surrendered
+multi Turret Rift HeraldCount
+perfectGame
+game Ended In Early Surrender
+ward Takedowns Before 20M
+champion
+team Rift Herald Kills
+rift Herald
+timePlayed
+game Length
+team ElderDragon Kills
+goldPerMinute
+takedowns In Enemy Fountain
+commandPings
+total Time Spent Dead
+elderDragon Kills WithOpposingSoul
+stealth Wards Placed
+save Ally From Death
+killsOnOtherLanes EarlyJungle As Laner
+deaths By EnemyChamps
+deaths
+
+secondary 5 reduced tan entropy normalized
+
+summonerLevel
+lane Minions First 10Minutes
+wards Killed
+ward Takedowns
+enemy Vision Pings
+total Minions Killed
+visionWards Bought InGame
+ward Takedowns Before 20M
+on MyWayPings
+detectorWards Placed
+control Wards Placed
+controlWard TimeCoverage In RiverOrEnemy Half
+stealth Wards Placed
+goldPerMinute
+commandPings
+earliest Baron
+timePlayed
+gameLength
+champion
+total Time Spent Dead
+enemy Missing Pings
+visionScore Per Minute
+kill Participation
+takedowns FirstXMinutes
+deaths
+deaths By EnemyChamps
+ability Uses
+total Damage Dealt
+items Purchased
+void MonsterKill
+consumables Purchased
+horde
+atakhan
+atakhan_first
+assist Me Pings
+magicDamage Taken
+magicDamage Dealt
+Full Team Takedown
+spell3Casts
+spell 1Casts
+summoner1Casts
+
+
+"summonerLevel",
+"laneMinionsFirst10Minutes",
+"totalTimeSpentDead",
+"gameLength",
+"timePlayed",
+"enemyVisionPings",
+"visionWardsBoughtInGame",
+"wardTakedowns",
+"wardTakedownsBefore20M",
+"controlWardsPlaced",
+"wardsKilled",
+"champion",
+"goldPerMinute",
+"earliestBaron",
+"onMyWayPings",
+"deathsByEnemyChamps",
+"visionScorePerMinute",
+"totalMinionsKilled",
+"detectorWardsPlaced",
+"controlWardTimeCoverageInRiverOrEnemyHalf",
+"deaths",
+"commandPings",
+"stealthWardsPlaced",
+"multiTurretRiftHeraldCount",
+"magicDamageTaken",
+"killsOnOtherLanesEarlyJungleAsLaner",
+"takedownsInEnemyFountain",
+"atakhan_first",
+"atakhan",
+"consumablesPurchased",
+"quickCleanse",
+"getTakedownsInAllLanesEarlyJungleAsLaner",
+"spell1Casts",
+"abilityUses",
+"spell3Casts",
+"horde",
+"killParticipation",
+"totalDamageDealt",
+"firstBloodAssist",
+"firstBloodKill",
+"skillshotsDodged",
+"enemyMissingPings",
+"magicDamageDealt",
+"moreEnemyJungleThanOpponent",
+"takedownsFirstXMinutes",
+"itemsPurchased",
+"visionScoreAdvantageLaneOpponent",
+"twentyMinionsIn3SecondsCount",
+"perfectDragonSoulsTaken",
+"teamRiftHeraldKills"

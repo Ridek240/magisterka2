@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 
 class Program
@@ -14,11 +15,73 @@ class Program
         // Rozpoczynamy mierzenie czasu
         stopwatch.Start();
         AddMatch addMatch = new AddMatch();
-        //using var db = new GameDbContext();
+        using var db = new GameDbContext();
         //Bayes.ConvestToCSV(db.Primary);
         //Bayes.ConvestToCSV(db.Secondary,5);
         //db.Dispose();
-        Bayes.Tutorial10("Secondary_exported");
+        //Other.Awerage(db.Secondary, db.Secondary_Awerage);
+        //db.SaveChanges();
+        //db.DiagnosticResults.RemoveRange(db.DiagnosticResults);
+        //db.SaveChanges();
+
+        //Bayes.Tutorial10(Dyskretyzacja.dyskretzacjaTestTestLast(db.Secondary_Awerage, 5));
+
+        //Bayes.Tutorial10(Dyskretyzacja.dyskretzacjaTestBinEqualNumberedB(db.Secondary_Awerage, 5));
+        /*Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaNumbered(db.Secondary));
+        Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaNumbered(db.Secondary_Awerage));
+        Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaReduced(db.Secondary));
+        Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaReduced(db.Secondary_Awerage));
+        Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaNumberedEqual(db.Secondary));
+        Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaNumberedEqual(db.Secondary_Awerage));
+        Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaReducedEqual(db.Secondary));
+        Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaReducedEqual(db.Secondary_Awerage));
+        */
+        
+        
+        //Diagnostics.RankValues(db);
+        Diagnostics.Calculations(db);
+        
+        
+        var unikalneNazwy = db.DiagnosticResults
+    .Select(p => p.MPCRank)
+    .Distinct()
+    .ToList();
+        return;
+
+        string folderPath = @"C:\magisterka\Bayes\NewTest";  // folder, w którym szukamy
+        string extension = "*.xdsl";           // rozszerzenie plików, np. *.txt
+
+        // Pobranie wszystkich plików o podanym rozszerzeniu (pełna ścieżka)
+        string[] files = Directory.GetFiles(folderPath, extension, SearchOption.AllDirectories);
+
+        Console.WriteLine($"Znalezione pliki o rozszerzeniu {extension}:");
+        foreach (var file in files)
+        {
+            Console.WriteLine(file); // file to pełna ścieżka do pliku
+            Diagnostics.AnalyzeAndSaveModel_Metrics(file, "rank", db);
+        }
+
+        //Bayes.Tutorial10(Dyskretyzacja.dyskretzacjaTestTestLastB(db.Secondary, 5));
+        //Bayes.Tutorial10(Dyskretyzacja.dyskretzacjaTestBinEqualNumberedB(db.Secondary_Awerage, 10));
+        //Bayes.Tutorial10("Secondary_discretisation_limited");
+        //string path = @"C:\magisterka\Bayes\Secondary_averave_discretisation_bins_5_amount220_numered\Secondary_averave_discretisation_bins_5_amount220_numered-tan.xdsl";
+        
+        /*
+        var list = db.DiagnosticResults.Where(x => x.FileName == "Secondary_averave_discretisation_bins_5_amount220_numered-tan.xdsl" && x.TargetValue == "xGold").OrderBy(n => Math.Abs(n.MPC)).ToList();
+
+        foreach(var item in list)
+        {
+            Console.WriteLine($"{item.Node}:{item.MPC}");
+        }*/
+        //Other.Checkup(db.Secondary_Awerage);
+
+
+        //var path = db.Secondary_Awerage.First();
+        //Bayes.Tutorial10(Dyskretyzacja.dyskretzacjaTestTestLast(db.Secondary_Awerage, 5));
+        /*
+        Bayes.Tutorial10(Dyskretyzacja.dyskretzacjaTestTestLast(db.Secondary, 7));
+        Bayes.Tutorial10(Dyskretyzacja.dyskretzacjaTestTestLast(db.Secondary, 10));
+        */
 
         //db.Database.EnsureCreated();
         /*var values = db.PlayerRanks.ToList();

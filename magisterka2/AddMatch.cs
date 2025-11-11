@@ -681,7 +681,46 @@ namespace magisterka2
         CHALLENGER
 
     }
-    public enum Division
+
+public static class RankExtensions
+{
+    public static string GetDisplayName(this Rank rank)
+    {
+        return rank switch
+        {
+            Rank.IRON => "0Iron",
+            Rank.BRONZE => "1Bronze",
+            Rank.SILVER => "2Silver",
+            Rank.GOLD => "3Gold",
+            Rank.PLATINUM => "4Platinum",
+            Rank.EMERALD => "5Emerald",
+            Rank.DIAMOND => "6Diamond",
+            Rank.MASTER => "7Master",
+            Rank.GRANDMASTER => "8Grandmaster",
+            Rank.CHALLENGER => "9Challenger",
+            _ => "None"
+        };
+    }
+
+    public static string GetDisplayNameReduced(this Rank rank)
+    {
+        return rank switch
+        {
+            Rank.IRON => "Averrage",
+            Rank.BRONZE => "Averrage",
+            Rank.SILVER => "Averrage",
+            Rank.GOLD => "Averrage",
+            Rank.PLATINUM => "Skilled",
+            Rank.EMERALD => "Skilled",
+            Rank.DIAMOND => "Skilled",
+            Rank.MASTER => "Elite",
+            Rank.GRANDMASTER => "Elite",
+            Rank.CHALLENGER => "Elite",
+            _ => "None"
+        };
+    }
+}
+public enum Division
     {
         I,
         II,

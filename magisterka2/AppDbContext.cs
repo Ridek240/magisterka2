@@ -14,10 +14,14 @@ namespace magisterka2
 
         public DbSet<Primary> Primary { get; set; }
         public DbSet<Secondary> Secondary { get; set; }
+        public DbSet<Secondary> SecondaryAwerage { get; set; }
+        public DbSet<Secondary_averave> Secondary_Awerage { get; set; }
         public DbSet<PlayerRank> PlayerRanks { get; set; }
 
-       //protected override void OnConfiguring(DbContextOptionsBuilder options)
-    //=> options.UseSqlite("Data Source=C:\\magisterka\\Bazy\\RawData.db");
+        public DbSet<DiagnosticResult> DiagnosticResults { get; set; }
+
+        //protected override void OnConfiguring(DbContextOptionsBuilder options)
+        //=> options.UseSqlite("Data Source=C:\\magisterka\\Bazy\\RawData.db");
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
@@ -32,6 +36,8 @@ namespace magisterka2
                 .HasKey(op => new { op.matchId, op.puuid });
             modelBuilder.Entity<PlayerRank>()
                 .HasKey(op =>  op.puuid);
+            modelBuilder.Entity<Secondary_averave>()
+                .HasKey(op => op.puuid);
             base.OnModelCreating(modelBuilder);
         }
 

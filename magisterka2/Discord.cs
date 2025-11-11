@@ -13,8 +13,9 @@ namespace magisterka2
         static DiscordRpcClient client;
         public static void Initialise()
         {
+            /*
             // Podaj swój Client ID z Discord Developer Portal
-            client = new DiscordRpcClient("1369010254985171036");
+            client = new DiscordRpcClient("1410964486239686737");
 
             // Opcjonalnie: ustaw logger do debugowania
             client.Logger = new ConsoleLogger() { Level = LogLevel.Warning };
@@ -29,21 +30,22 @@ namespace magisterka2
             client.Initialize();
 
             // Ustaw Rich Presence
-            SetRichPresence("Przetwarzam dane w aplikacji", "Wczytywanie baz danych");
+            SetRichPresence("Przetwarzam dane w aplikacji", "Wczytywanie baz danych");*/
         }
 
         public static void SetRichPresence(string detail, string state)
         {
-            client.SetPresence(new RichPresence()
+           /* client.SetPresence(new RichPresence()
             {
                 Details = detail,
                 State = state,
                 Timestamps = Timestamps.Now, // licznik czasu od teraz
-            });
+            });*/
         }
 
         public static void SetRichPresence(string detail,string state, int current, int max)
         {
+            /*
             client.SetPresence(new RichPresence()
             {
                 Details = detail,
@@ -55,10 +57,10 @@ namespace magisterka2
                     Size = current,
                     Max = max,
                 }
-            });
+            });*/
         }
         public static void SetRichPresenceUpdate(string detail, string state, int current, int max)
-        {
+        {/*
             client.SetPresence(new RichPresence()
             {
                 Details = detail,
@@ -69,7 +71,7 @@ namespace magisterka2
                     Size = current,
                     Max = max,
                 }
-            });
+            });*/
         }
     }
 }

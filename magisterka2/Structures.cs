@@ -6,10 +6,14 @@ using System.Threading.Tasks;
 
 namespace magisterka2
 {
+
+    public class SecondaryBase
+    {
+        public Rank rank { get; set; }
+    }
     public class Primary
     {
         public string? matchId { get; set; }
-
         public int PlayerScore0 { get; set; }
         public int PlayerScore1 { get; set; }
         public int PlayerScore10 { get; set; }
@@ -152,9 +156,6 @@ namespace magisterka2
         public int wardsKilled { get; set; }
         public int wardsPlaced { get; set; }
         public bool win { get; set; }
-
-        //Challanges
-
         public int _12AssistStreakCount { get; set; }
         public float HealFromMapSources { get; set; }
         public int InfernalScalePickup { get; set; }
@@ -291,9 +292,6 @@ namespace magisterka2
         public int soloTurretsLategame { get; set; }
         public int fasterSupportQuestCompletion { get; set; }
         public int highestCrowdControlScore { get; set; }
-
-        //teams
-
         public int atakhan { get; set; }
         public bool atakhan_first { get; set; }
         public int baron { get; set; }
@@ -629,11 +627,11 @@ namespace magisterka2
         }
     }
 
-    public class Secondary
+    public class Secondary: SecondaryBase
     {
 
 
-        public Rank rank { get; set; }
+        //public Rank rank { get; set; }
         public string? matchId { get; set; }
         public int allInPings { get; set; }
         public int assistMePings { get; set; }

@@ -12,14 +12,22 @@ namespace magisterka2
 {
     public class Bayes
     {
-
-        public static void Tutorial10(string name)
+        static string path = @"C:\magisterka\Bayes\NewTest\";
+        public static void Tutorial10(string fullPath)
         {
+            Console.WriteLine("Aktualny czas: " + DateTime.Now.ToString("HH:mm:ss"));
+            List<string> messsage = new List<string>();
+            string name = Path.GetFileName(fullPath);
+            if (!Directory.Exists($@"{path}{name}"))
+            {
+                Directory.CreateDirectory($@"{path}{name}");
+                Console.WriteLine("Folder został utworzony.");
+            }
             Console.WriteLine("Starting Tutorial10...");
             DataSet ds = new DataSet();
             try
             {
-                ds.ReadFile($"{name}.csv");
+                ds.ReadFile($"{path}{name}.csv");
             }
             catch (SmileException e)
             {
@@ -28,7 +36,7 @@ namespace magisterka2
             }
             Console.WriteLine("Dataset has {0} variables (columns) and {1} records (rows)",
             ds.VariableCount, ds.RecordCount);
-            
+
             /*
             for (int i = 0; i < ds.VariableCount; i++)
             {
@@ -39,11 +47,16 @@ namespace magisterka2
                     ds.Discretize(i, DiscretizationAlgorithmType.UniformWidth, 2, ds.GetVariableId(i));
                 }
             }
-            
+           */
+            messsage.Add("BayesianSearch 1 Begin");
+            Console.WriteLine("Aktualny czas: " + DateTime.Now.ToString("HH:mm:ss"));
             BayesianSearch bayesSearch = new BayesianSearch();
             bayesSearch.IterationCount = 50;
-            bayesSearch.RandSeed = 9876543;
-            Network net1;
+            int seed = new Random().Next();
+            messsage.Add($"BayesianSearch 1 seed : {seed}");
+
+            bayesSearch.RandSeed = seed;
+            Network net1 = null;
             try
             {
                 net1 = bayesSearch.Learn(ds);
@@ -51,13 +64,22 @@ namespace magisterka2
             catch (SmileException e)
             {
                 Console.WriteLine($"Bayesian Search failed{e.Message}");
-                return;
+                //return;
             }
             Console.WriteLine("1st Bayesian Search finished, structure score: {0}",
             bayesSearch.LastScore);
-            net1.WriteFile("tutorial10-bs1.xdsl");
-            Network net2;
-            bayesSearch.RandSeed = 3456789;
+            messsage.Add($"1st Bayesian Search finished, structure score: {bayesSearch.LastScore}");
+            
+            if(net1 != null)
+                net1.WriteFile($@"{path}{name}\{name}-bs1.xdsl");
+            Network net2 = null;
+            //bayesSearch.RandSeed = 3456789;
+            
+            messsage.Add("BayesianSearch 2 Begin");
+            Console.WriteLine("Aktualny czas: " + DateTime.Now.ToString("HH:mm:ss"));
+            seed = new Random().Next();
+            messsage.Add($"BayesianSearch 2 seed : {seed}");
+            bayesSearch.RandSeed = seed;
             try
             {
                 net2 = bayesSearch.Learn(ds);
@@ -65,11 +87,13 @@ namespace magisterka2
             catch (SmileException e)
             {
                 Console.WriteLine($"Bayesian Search failed{e.Message}");
-                return;
+                //return;
             }
             Console.WriteLine("2nd Bayesian Search finished, structure score: {0}",
             bayesSearch.LastScore);
-            net2.WriteFile("tutorial10-bs2.xdsl");
+            if (net2 != null)
+                net2.WriteFile($@"{path}{name}\{name}-bs2.xdsl");
+            messsage.Add($"2st Bayesian Search finished, structure score: {bayesSearch.LastScore}");
             /*int idxAge = ds.FindVariable("Age");
             int idxProfession = ds.FindVariable("Profession");
             int idxCreditWorthiness = ds.FindVariable("CreditWorthiness");
@@ -99,8 +123,13 @@ namespace magisterka2
             net3.WriteFile("tutorial10-bs3.xdsl");*/
             Network net4 = null;
             TAN tan = new TAN();
-            tan.RandSeed = 777999;
-            tan.ClassVariableId = "Rank";
+
+            messsage.Add("TAN Begin");
+            Console.WriteLine("Aktualny czas: " + DateTime.Now.ToString("HH:mm:ss"));
+            seed = new Random().Next();
+            tan.RandSeed = seed;
+            messsage.Add($"TAN seed : {seed}");
+            tan.ClassVariableId = "rank";
             try
             {
                 net4 = tan.Learn(ds);
@@ -111,8 +140,32 @@ namespace magisterka2
             }
             Console.WriteLine("Tree-augmented Naive Bayes finished");
             if(net4!=null)
-                net4.WriteFile("tutorial10-tan.xdsl");
-            PC pc = new PC();
+                net4.WriteFile($@"{path}{name}\{name}-tan.xdsl");
+
+            File.WriteAllLines($@"{path}{name}\{name}data.txt", messsage);
+
+
+            NaiveBayes naiveBayes = new NaiveBayes();
+            messsage.Add("naive Begin");
+            Console.WriteLine("Aktualny czas: " + DateTime.Now.ToString("HH:mm:ss"));
+            seed = new Random().Next();
+            messsage.Add($"Naive seed : {seed}");
+            naiveBayes.ClassVariableId = "rank";
+            Network net5 = null;
+            try
+            {
+                net5 = naiveBayes.Learn(ds);
+            }
+            catch (SmileException)
+            {
+                Console.WriteLine("naive failed failed");
+            }
+            Console.WriteLine("Naive Bayes finished");
+            if (net5 != null)
+                net5.WriteFile($@"{path}{name}\{name}-naive.xdsl");
+
+            File.WriteAllLines($@"{path}{name}\{name}data.txt", messsage);
+            /*PC pc = new PC();
             Pattern pattern;
             try
             {
@@ -125,7 +178,7 @@ namespace magisterka2
             }
             Network net5 = pattern.MakeNetwork(ds);
             Console.WriteLine("PC finished, proceeding to parameter learning");
-            net5.WriteFile("tutorial10-pc.xdsl");
+            net5.WriteFile($@"{path}{name}\{name}-pc.xdsl");
             EM em = new EM();
             DataMatch[] matching;
             try
@@ -150,8 +203,9 @@ namespace magisterka2
                 return;
             }
             Console.WriteLine("EM finished");
-            net5.WriteFile("tutorial10-pc-em.xdsl");
+            net5.WriteFile($@"{path}{name}\{name}-pc-em.xdsl");
             Console.WriteLine("Tutorial10 complete");
+            */
         }
 
         public static void ConvestToCSV<T>(DbSet<T> dbSet) where T: class
