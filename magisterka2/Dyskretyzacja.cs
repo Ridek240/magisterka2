@@ -438,7 +438,7 @@ namespace magisterka2
             {
                 int binIndex = (int)((number - Min) / BinSize);
 
-                return $"{Name}_{binIndex * BinSize + Min:F2}_{(binIndex + 1) * BinSize + Min:F2}".Replace(",",".");
+                return $"{Name}_{binIndex * BinSize + Min:F2}_{(binIndex + 1) * BinSize + Min:F2}".Replace(",","_").Replace("-", "_");
             }
         }
 
@@ -843,7 +843,7 @@ namespace magisterka2
                 {
                     if (number >= Boundaries[i] && number <= Boundaries[i + 1])
                     {
-                        return $"{Name}_{Boundaries[i]:F2}_{Boundaries[i + 1]:F2}".Replace(",", ".");
+                        return $"{Name}_{Boundaries[i]:F2}_{Boundaries[i + 1]:F2}".Replace(",", "_").Replace("-", "_");
                     }
                 }
 

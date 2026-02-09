@@ -27,21 +27,58 @@ class Program
         //Bayes.Tutorial10(Dyskretyzacja.dyskretzacjaTestTestLast(db.Secondary_Awerage, 5));
 
         //Bayes.Tutorial10(Dyskretyzacja.dyskretzacjaTestBinEqualNumberedB(db.Secondary_Awerage, 5));
-        /*Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaNumbered(db.Secondary));
+
+        Validation.db = db;
+        /*
+        Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaNumbered(db.Secondary));
         Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaNumbered(db.Secondary_Awerage));
         Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaReduced(db.Secondary));
         Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaReduced(db.Secondary_Awerage));
         Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaNumberedEqual(db.Secondary));
-        Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaNumberedEqual(db.Secondary_Awerage));
         Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaReducedEqual(db.Secondary));
-        Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaReducedEqual(db.Secondary_Awerage));
         */
-        
-        
-        //Diagnostics.RankValues(db);
-        Diagnostics.Calculations(db);
-        //Diagnostics.RankValues(db);
+        //var it1 = NewDiscretisations.DyscrtyzacjaNumberedEqual(db.Secondary_Awerage);
+        //Bayes.Tutorial10(it1);
+        //var it2 = NewDiscretisations.DyscrtyzacjaReducedEqual(db.Secondary_Awerage);
+        //Bayes.Tutorial10(it2);
+        //Validation.IterateFolders(it1);
+        //Validation.IterateFoldersLeanrn();
+        //db.ValidationResults.RemoveRange(db.ValidationResults);
+        //db.DiagnosticResults.RemoveRange(db.DiagnosticResults);
+        db.SaveChanges();
+        if (false)
+        {
+            NewDiscretisations.DyscrtyzacjaNumberedEqual(db.Secondary);
+            NewDiscretisations.DyscrtyzacjaNumbered(db.Secondary);
+            NewDiscretisations.DyscrtyzacjaNumbered(db.Secondary_Awerage);
+            NewDiscretisations.DyscrtyzacjaReduced(db.Secondary);
+            NewDiscretisations.DyscrtyzacjaReduced(db.Secondary_Awerage);
+            NewDiscretisations.DyscrtyzacjaNumberedEqual(db.Secondary_Awerage);
+            NewDiscretisations.DyscrtyzacjaReducedEqual(db.Secondary);
+            NewDiscretisations.DyscrtyzacjaReducedEqual(db.Secondary_Awerage);
+        }
 
+        /*foreach( var ITEM in db.ValidationResults)
+        {
+            ITEM.DataFile = Path.GetFileName(ITEM.DataFile);
+        }*/
+        //db.SaveChanges();
+        //Console.WriteLine(Path.GetFileName(db.ValidationResults.First().DataFile));
+        Diagnostics.Calculations(db);
+        //Validation.IterateFolders();
+        /*
+        Console.WriteLine($"Primary:{db.Primary.Count()}");
+        Console.WriteLine($"Secondary:{db.Secondary.Count()}");
+        Console.WriteLine($"Secondary_average:{db.Secondary_Awerage.Count()}");
+        Console.WriteLine($"PlayerRanks:{db.PlayerRanks.Count()}");
+        */
+
+        //Selectors.PrintData(db, "reduced");
+        Console.WriteLine("work");
+        Selectors.ConfusionMatrixPrtint(db, "Secondary_averave_5_evenBins_numbered-naive.xdsl");
+        //Diagnostics.Calculations(db);
+        //Diagnostics.RankValues(db);
+        Console.WriteLine(db.Secondary.Where(x => x.rank != Rank.NONE).Count());
         var unikalneNazwy = db.DiagnosticResults
     .Select(p => p.MPCRank)
     .Distinct()
@@ -175,3 +212,5 @@ class Program
         
     }
 }
+
+

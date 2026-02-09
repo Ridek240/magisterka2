@@ -197,22 +197,24 @@ namespace magisterka2
         public static void Calculations(GameDbContext db)
         {
 
-            List<NodeSumDto> FileSumMPC = AllCodeAnalitics(db, x => x.MPCRank);
+            /*List<NodeSumDto> FileSumMPC = AllCodeAnalitics(db, x => x.MPCRank);
             List<NodeSumDto> FileSumCE = AllCodeAnalitics(db, x => x.CERank);
             List<NodeSumDto> FileSumNCE = AllCodeAnalitics(db, x => x.NCERank);
+            */
 
+            //List<NodeSumDto> suma_tan_MPC = GetDataByBayesType(db, "-tan", x => x.MPCRank);
+            //List<NodeSumDto> suma_tan_CE = GetDataByBayesType(db, "-tan", x => x.CERank);
+            List<NodeSumDto> suma_tan_NCE = GetDataByBayesType(db, "Secondary_averave_5_evenBins_reduced-tan", x => x.NCERank);
 
+            /*
             List<NodeSumDto> suma_bs_MPC = GetDataByBayesType(db, "-bs", x => x.MPCRank);
-            List<NodeSumDto> suma_tan_MPC = GetDataByBayesType(db, "-tan", x => x.MPCRank);
             List<NodeSumDto> suma_naive_MPC = GetDataByBayesType(db, "-naive", x => x.MPCRank);            
             List<NodeSumDto> suma_bs_CE = GetDataByBayesType(db, "-bs", x => x.CERank);
-            List<NodeSumDto> suma_tan_CE = GetDataByBayesType(db, "-tan", x => x.CERank);
             List<NodeSumDto> suma_naive_CE = GetDataByBayesType(db, "-naive", x => x.CERank);            
             List<NodeSumDto> suma_bs_NCE = GetDataByBayesType(db, "-bs", x => x.NCERank);
-            List<NodeSumDto> suma_tan_NCE = GetDataByBayesType(db, "-tan", x => x.NCERank);
             List<NodeSumDto> suma_naive_NCE = GetDataByBayesType(db, "-naive", x => x.NCERank);
-
-            int maxLength = new[]
+            */
+/*            int maxLength = new[]
 {
     FileSumMPC.Count, FileSumCE.Count, FileSumNCE.Count,
     suma_bs_MPC.Count, suma_tan_MPC.Count, suma_naive_MPC.Count,
@@ -257,8 +259,151 @@ namespace magisterka2
             }
             File.WriteAllText($@"{path}\data.txt", output);
             Console.WriteLine(output);
+            AnalizisByGroup(db, x => x.NCERank, "NCERank");
+            AnalizisByGroup(db, x => x.CERank, "CERank");
+            AnalizisByGroup(db, x => x.MPCRank, "MPCRank");
+            AnalizisByGroupByFile(db, "-bs", x => x.NCERank, "NCERank");
+            AnalizisByGroupByFile(db, "-tan", x => x.NCERank, "NCERank");
+            AnalizisByGroupByFile(db, "-naive", x => x.NCERank, "NCERank");            
+            AnalizisByGroupByFile(db, "-bs", x => x.CERank, "CERank");
+            AnalizisByGroupByFile(db, "-tan", x => x.CERank, "CERank");
+            AnalizisByGroupByFile(db, "-naive", x => x.CERank, "CERank");           
+            AnalizisByGroupByFile(db, "-bs", x => x.MPCRank, "MPCRank");
+            AnalizisByGroupByFile(db, "-tan", x => x.MPCRank, "MPCRank");
+            AnalizisByGroupByFile(db, "-naive", x => x.MPCRank, "MPCRank");
+*/
+            Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaNumbered(db.Secondary, 5, suma_naive_NCE.Take(50).Select(x => x.Node).ToList(),name: "_suma_naive_NCE"));
+            Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaNumbered(db.Secondary_Awerage, 5, suma_naive_NCE.Take(50).Select(x => x.Node).ToList(),name: "_suma_naive_NCE"));
+            Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaReduced(db.Secondary, 5, suma_naive_NCE.Take(50).Select(x => x.Node).ToList(),name: "_suma_naive_NCE"));
+            Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaReduced(db.Secondary_Awerage, 5, suma_naive_NCE.Take(50).Select(x => x.Node).ToList(),name: "_suma_naive_NCE"));
+            Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaNumbered(db.Secondary, 5, suma_tan_NCE.Take(50).Select(x => x.Node).ToList(), name: "suma_tan_NCE"));
+            Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaNumbered(db.Secondary_Awerage, 5, suma_tan_NCE.Take(50).Select(x => x.Node).ToList(), name: "_suma_tan_NCE"));
+            Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaReduced(db.Secondary, 5, suma_tan_NCE.Take(50).Select(x => x.Node).ToList(), name: "_suma_tan_NCE"));
+            Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaReduced(db.Secondary_Awerage, 5, suma_tan_NCE.Take(50).Select(x => x.Node).ToList(), name: "_suma_tan_NCE"));
+            /*Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaReducedEqual(db.Secondary, 5, FileSumMPC.Take(50).Select(x => x.Node).ToList(),name: "_FileSumMPC"));
+            Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaReducedEqual(db.Secondary, 5, FileSumCE.Take(50).Select(x => x.Node).ToList(),name: "_FileSumCE"));
+            Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaReducedEqual(db.Secondary, 5, FileSumNCE.Take(50).Select(x => x.Node).ToList(),name: "_FileSumNCE"));
+            Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaReducedEqual(db.Secondary, 5, suma_bs_MPC.Take(50).Select(x => x.Node).ToList(),name: "_suma_bs_MPC"));
+            Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaReducedEqual(db.Secondary, 5, suma_tan_MPC.Take(50).Select(x => x.Node).ToList(),name: "_suma_tan_MPC"));
+            Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaReducedEqual(db.Secondary, 5, suma_naive_MPC.Take(50).Select(x => x.Node).ToList(),name: "_suma_naive_MPC"));
+            Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaReducedEqual(db.Secondary, 5, suma_bs_CE.Take(50).Select(x => x.Node).ToList(),name: "_suma_bs_CE"));
+            Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaReducedEqual(db.Secondary, 5, suma_tan_CE.Take(50).Select(x => x.Node).ToList(),name: "_suma_tan_CE"));
+            Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaReducedEqual(db.Secondary, 5, suma_naive_CE.Take(50).Select(x => x.Node).ToList(),name: "_suma_naive_CE"));
+            Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaReducedEqual(db.Secondary, 5, suma_bs_NCE.Take(50).Select(x => x.Node).ToList(),name: "_suma_bs_NCE"));
+            Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaReducedEqual(db.Secondary, 5, suma_naive_NCE.Take(50).Select(x => x.Node).ToList(),name: "_suma_naive_NCE"));
 
+            Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaReducedEqual(db.Secondary_Awerage, 5, FileSumMPC.Take(50).Select(x => x.Node).ToList(), name: "_FileSumMPC"));
+            Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaReducedEqual(db.Secondary_Awerage, 5, FileSumCE.Take(50).Select(x => x.Node).ToList(), name: "_FileSumCE"));
+            Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaReducedEqual(db.Secondary_Awerage, 5, FileSumNCE.Take(50).Select(x => x.Node).ToList(), name: "_FileSumNCE"));
+            Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaReducedEqual(db.Secondary_Awerage, 5, suma_bs_MPC.Take(50).Select(x => x.Node).ToList(), name: "_suma_bs_MPC"));
+            Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaReducedEqual(db.Secondary_Awerage, 5, suma_tan_MPC.Take(50).Select(x => x.Node).ToList(), name: "_suma_tan_MPC"));
+            Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaReducedEqual(db.Secondary_Awerage, 5, suma_naive_MPC.Take(50).Select(x => x.Node).ToList(), name: "_suma_naive_MPC"));
+            Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaReducedEqual(db.Secondary_Awerage, 5, suma_bs_CE.Take(50).Select(x => x.Node).ToList(), name: "_suma_bs_CE"));
+            Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaReducedEqual(db.Secondary_Awerage, 5, suma_tan_CE.Take(50).Select(x => x.Node).ToList(), name: "_suma_tan_CE"));
+            Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaReducedEqual(db.Secondary_Awerage, 5, suma_naive_CE.Take(50).Select(x => x.Node).ToList(), name: "_suma_naive_CE"));
+            Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaReducedEqual(db.Secondary_Awerage, 5, suma_bs_NCE.Take(50).Select(x => x.Node).ToList(), name: "_suma_bs_NCE"));
+            Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaReducedEqual(db.Secondary_Awerage, 5, suma_tan_NCE.Take(50).Select(x => x.Node).ToList(), name: "_suma_tan_NCE"));
+            Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaReducedEqual(db.Secondary_Awerage, 5, suma_naive_NCE.Take(50).Select(x => x.Node).ToList(), name: "_suma_naive_NCE"));
+            */
             //List<NodeSum2Dto> suma_bs_target_MPC = GetItemByGroup(db, "-bs", x => x.MPCRank);
+        }
+
+        private static void AnalizisByGroup(GameDbContext db, Func<DiagnosticResult, double> selector, string name)
+        {
+            int columnWidth = 43;
+            var grupy = db.DiagnosticResults
+    .GroupBy(r =>  r.TargetValue ) // <- tu 2 kolumny
+    .ToList();
+            Dictionary<string, List<NodeSumDto>> groupResults = new Dictionary<string, List<NodeSumDto>>();
+            foreach(var group in grupy)
+            {
+                List<NodeSumDto> groupsum = AllCodeAnaliticsList(group, selector);
+                Console.WriteLine(group.Key);
+                groupResults.Add(group.Key, groupsum);
+            }
+
+            string output = "";
+            List<int> maxsize = new List<int>();
+            foreach(var group in groupResults)
+            {
+                output += group.Key.ToString().PadRight(columnWidth);
+                maxsize.Add(group.Value.Count);
+            }
+                output += "\n";
+
+            int maximum = maxsize.Max();
+
+            for(int i = 0; i < maximum; i++)
+            {
+                foreach (var group in groupResults)
+                {
+                    output += (group.Value.ElementAtOrDefault(i)?.ToString() ?? "").PadRight(columnWidth);
+                }
+                    output += "\n";
+            }
+            File.WriteAllText($@"{path}\data2-{name}.txt", output);
+        }
+        private static void AnalizisByGroupByFile(GameDbContext db, string file, Func<DiagnosticResult, double> selector, string name)
+        {
+            int columnWidth = 43;
+            var grupy = db.DiagnosticResults
+    .GroupBy(r => r.TargetValue) // <- tu 2 kolumny
+    .ToList();
+            Dictionary<string, List<NodeSumDto>> groupResults = new Dictionary<string, List<NodeSumDto>>();
+            foreach (var group in grupy)
+            {
+                List<NodeSumDto> groupsum = GetDataByBayesType(group, file, selector);
+                Console.WriteLine(group.Key);
+                groupResults.Add(group.Key, groupsum);
+            }
+
+            string output = "";
+            List<int> maxsize = new List<int>();
+            foreach (var group in groupResults)
+            {
+                output += group.Key.ToString().PadRight(columnWidth);
+                maxsize.Add(group.Value.Count);
+            }
+            output += "\n";
+
+            int maximum = maxsize.Max();
+
+            for (int i = 0; i < maximum; i++)
+            {
+                foreach (var group in groupResults)
+                {
+                    output += (group.Value.ElementAtOrDefault(i)?.ToString() ?? "").PadRight(columnWidth);
+                }
+                output += "\n";
+            }
+            File.WriteAllText($@"{path}\data2{file}-{name}.txt", output);
+        }
+        private static List<NodeSumDto> AllCodeAnaliticsList(IGrouping<string, DiagnosticResult> db, Func<DiagnosticResult, double> selector)
+        {
+            return db
+.GroupBy(r => r.Node).AsEnumerable()
+.Select(g => new NodeSumDto
+{
+    Node = g.Key,
+    Suma = g.Sum(selector)
+}).OrderBy(r => r.Suma)
+.ToList();
+        }
+
+        private static List<NodeSumDto> GetDataByBayesType(IGrouping<string, DiagnosticResult> db, string Ending, Func<DiagnosticResult, double> selector)
+        {
+            var result = db
+                .Where(r => r.FileName.Contains(Ending))
+                .AsEnumerable() // 🔹 przenosi do pamięci .NET
+                .GroupBy(r => r.Node)
+                .Select(g => new NodeSumDto
+                {
+                    Node = g.Key,
+                    Suma = g.Sum(selector)
+                })
+                .OrderBy(r => r.Suma)
+                .ToList();
+            return result;
         }
 
         private static List<NodeSumDto> AllCodeAnalitics(GameDbContext db, Func<DiagnosticResult, double> selector)

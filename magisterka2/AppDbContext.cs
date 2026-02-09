@@ -20,6 +20,11 @@ namespace magisterka2
 
         public DbSet<DiagnosticResult> DiagnosticResults { get; set; }
 
+        public DbSet<ValidationResult> ValidationResults { get; set; }
+        public DbSet<OutcomeResult> OutcomeResults { get; set; }
+        public DbSet<ConfusionMatrixEntry> ConfusionMatrixEntries { get; set; }
+        public DbSet<RocPoint> RocPoints { get; set; }
+
         //protected override void OnConfiguring(DbContextOptionsBuilder options)
         //=> options.UseSqlite("Data Source=C:\\magisterka\\Bazy\\RawData.db");
 
@@ -39,6 +44,21 @@ namespace magisterka2
             modelBuilder.Entity<Secondary_averave>()
                 .HasKey(op => op.puuid);
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<ValidationResult>()
+    .HasMany(v => v.OutcomeResults)
+    .WithOne()
+    .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ValidationResult>()
+                .HasMany(v => v.ConfusionMatrix)
+                .WithOne()
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ValidationResult>()
+                .HasMany(v => v.RocPoints)
+                .WithOne()
+                .OnDelete(DeleteBehavior.Cascade);
         }
 
     }

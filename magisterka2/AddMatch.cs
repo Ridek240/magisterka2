@@ -688,16 +688,16 @@ public static class RankExtensions
     {
         return rank switch
         {
-            Rank.IRON => "0Iron",
-            Rank.BRONZE => "1Bronze",
-            Rank.SILVER => "2Silver",
-            Rank.GOLD => "3Gold",
-            Rank.PLATINUM => "4Platinum",
-            Rank.EMERALD => "5Emerald",
-            Rank.DIAMOND => "6Diamond",
-            Rank.MASTER => "7Master",
-            Rank.GRANDMASTER => "8Grandmaster",
-            Rank.CHALLENGER => "9Challenger",
+            Rank.IRON => "xIron",
+            Rank.BRONZE => "xBronze",
+            Rank.SILVER => "xSilver",
+            Rank.GOLD => "xGold",
+            Rank.PLATINUM => "xPlatinum",
+            Rank.EMERALD => "xEmerald",
+            Rank.DIAMOND => "xDiamond",
+            Rank.MASTER => "xMaster",
+            Rank.GRANDMASTER => "xGrandmaster",
+            Rank.CHALLENGER => "xChallenger",
             _ => "None"
         };
     }

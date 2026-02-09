@@ -12,7 +12,7 @@ namespace magisterka2
 {
     public class Bayes
     {
-        static string path = @"C:\magisterka\Bayes\NewTest\";
+        static string path = @"C:\magisterka\Bayes\NewTest\TestBayes\";
         public static void Tutorial10(string fullPath)
         {
             Console.WriteLine("Aktualny czas: " + DateTime.Now.ToString("HH:mm:ss"));
@@ -56,6 +56,7 @@ namespace magisterka2
             messsage.Add($"BayesianSearch 1 seed : {seed}");
 
             bayesSearch.RandSeed = seed;
+            bayesSearch.LinkProbability = 0.2;
             Network net1 = null;
             try
             {
@@ -144,7 +145,7 @@ namespace magisterka2
 
             File.WriteAllLines($@"{path}{name}\{name}data.txt", messsage);
 
-
+            
             NaiveBayes naiveBayes = new NaiveBayes();
             messsage.Add("naive Begin");
             Console.WriteLine("Aktualny czas: " + DateTime.Now.ToString("HH:mm:ss"));
@@ -207,6 +208,94 @@ namespace magisterka2
             Console.WriteLine("Tutorial10 complete");
             */
         }
+        public static void BSTEST(string fullPath)
+        {
+            Console.WriteLine("Aktualny czas: " + DateTime.Now.ToString("HH:mm:ss"));
+            List<string> messsage = new List<string>();
+            string nameext = Path.GetFileName(fullPath);
+
+            string name = Path.GetFileNameWithoutExtension(nameext);
+
+            if (!Directory.Exists($@"{path}{name}"))
+            {
+                Directory.CreateDirectory($@"{path}{name}");
+                Console.WriteLine("Folder został utworzony.");
+            }
+            Console.WriteLine("Starting Tutorial10...");
+            DataSet ds = new DataSet();
+            try
+            {
+                ds.ReadFile($"{path}{name}.csv");
+            }
+            catch (SmileException e)
+            {
+                Console.WriteLine($"Dataset load failed{e.Message}");
+                return;
+            }
+            Console.WriteLine("Dataset has {0} variables (columns) and {1} records (rows)",
+            ds.VariableCount, ds.RecordCount);
+
+            /*
+            for (int i = 0; i < ds.VariableCount; i++)
+            {
+                if(!ds.IsDiscrete(i))
+                {
+                    Console.WriteLine(ds.GetVariableId(i));
+                    
+                    ds.Discretize(i, DiscretizationAlgorithmType.UniformWidth, 2, ds.GetVariableId(i));
+                }
+            }
+           */
+            messsage.Add("BayesianSearch 1 Begin");
+            Console.WriteLine("Aktualny czas: " + DateTime.Now.ToString("HH:mm:ss"));
+            BayesianSearch bayesSearch = new BayesianSearch();
+            bayesSearch.IterationCount = 50;
+            int seed = new Random().Next();
+            messsage.Add($"BayesianSearch 1 seed : {seed}");
+
+            bayesSearch.RandSeed = seed;
+            bayesSearch.LinkProbability = 0.2;
+            Network net1 = null;
+            try
+            {
+                net1 = bayesSearch.Learn(ds);
+            }
+            catch (SmileException e)
+            {
+                Console.WriteLine($"Bayesian Search failed{e.Message}");
+                //return;
+            }
+            Console.WriteLine("1st Bayesian Search finished, structure score: {0}",
+            bayesSearch.LastScore);
+            messsage.Add($"1st Bayesian Search finished, structure score: {bayesSearch.LastScore}");
+
+            if (net1 != null)
+                net1.WriteFile($@"{path}{name}\{name}-bs1.xdsl");
+            Network net2 = null;
+            //bayesSearch.RandSeed = 3456789;
+
+            messsage.Add("BayesianSearch 2 Begin");
+            Console.WriteLine("Aktualny czas: " + DateTime.Now.ToString("HH:mm:ss"));
+            seed = new Random().Next();
+            messsage.Add($"BayesianSearch 2 seed : {seed}");
+            bayesSearch.RandSeed = seed;
+            bayesSearch.LinkProbability = 0.3;
+            try
+            {
+                net2 = bayesSearch.Learn(ds);
+            }
+            catch (SmileException e)
+            {
+                Console.WriteLine($"Bayesian Search failed{e.Message}");
+                //return;
+            }
+            Console.WriteLine("2nd Bayesian Search finished, structure score: {0}",
+            bayesSearch.LastScore);
+            if (net2 != null)
+                net2.WriteFile($@"{path}{name}\{name}-bs2.xdsl");
+            messsage.Add($"2st Bayesian Search finished, structure score: {bayesSearch.LastScore}");
+        }
+
 
         public static void ConvestToCSV<T>(DbSet<T> dbSet) where T: class
         {

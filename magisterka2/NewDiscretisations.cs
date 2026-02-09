@@ -12,12 +12,12 @@ namespace magisterka2
 {
     public class NewDiscretisations
     {
-        static string path = @"C:\magisterka\Bayes\NewTest";
-        public static string DyscrtyzacjaReducedEqual<T>(DbSet<T> dbSet, int bins = 5, int maxColumns = 220, string lastColumnName = "rank") where T : SecondaryBase
+        static string path = @"C:\magisterka\Bayes\NewTest\braki\";
+        public static string DyscrtyzacjaReducedEqual<T>(DbSet<T> dbSet, int bins = 5, List<string> names = null, string name ="", int maxColumns = 220, string lastColumnName = "rank") where T : SecondaryBase
         {
             Console.WriteLine("Aktualny czas: " + DateTime.Now.ToString("HH:mm:ss"));
             var type = typeof(T);
-            string filepath = path + @"\" + $"{type.Name}_{bins}_evenBins_reduced";
+            string filepath = path + @"\" + $"{type.Name}_{bins}{name}_evenBins_reduced";
             Console.WriteLine("Typ elementu w DbSet: " + type.FullName);
             Console.WriteLine($"Working for {maxColumns}");
             var properties = type.GetProperties()
@@ -32,6 +32,8 @@ namespace magisterka2
             {
                 if (IsNumericType(prop.PropertyType))
                 {
+                    if (prop.Name == "eligibleForProgression") continue;
+
                     var values = allItems
                         .Select(item => Convert.ToSingle(prop.GetValue(item)))
                         .OrderBy(x => x)
@@ -71,10 +73,11 @@ namespace magisterka2
             var allFields = type.GetProperties().Where(p => p.PropertyType != typeof(string)).ToList();
             var lastField = allFields.FirstOrDefault(p => p.Name.Equals(lastColumnName, StringComparison.OrdinalIgnoreCase));
             var limitedFields = new List<PropertyInfo>();
-
+            allFields.RemoveAll(x => x.Name.Equals("eligibleForProgression", StringComparison.OrdinalIgnoreCase));
             foreach (var p in allFields)
             {
                 if (p.Name.Equals(lastColumnName, StringComparison.OrdinalIgnoreCase)) continue;
+                if (names != null && !names.Contains(p.Name)) continue;
                 if (limitedFields.Count >= maxColumns) break;
                 limitedFields.Add(p);
             }
@@ -116,11 +119,11 @@ namespace magisterka2
             return filepath;
         }
 
-        public static string DyscrtyzacjaNumberedEqual<T>(DbSet<T> dbSet, int bins = 5, int maxColumns = 220, string lastColumnName = "rank") where T : SecondaryBase
+        public static string DyscrtyzacjaNumberedEqual<T>(DbSet<T> dbSet, int bins = 5, List<string> names = null, string name = "", int maxColumns = 220, string lastColumnName = "rank") where T : SecondaryBase
         {
             Console.WriteLine("Aktualny czas: " + DateTime.Now.ToString("HH:mm:ss"));
             var type = typeof(T);
-            string filepath = path + @"\" + $"{type.Name}_{bins}_evenBins_numbered";
+            string filepath = path + @"\" + $"{type.Name}_{bins}{name}_evenBins_numbered";
             Console.WriteLine("Typ elementu w DbSet: " + type.FullName);
             Console.WriteLine($"Working for {maxColumns}");
             var properties = type.GetProperties()
@@ -135,6 +138,7 @@ namespace magisterka2
             {
                 if (IsNumericType(prop.PropertyType))
                 {
+                    if (prop.Name == "eligibleForProgression") continue;
                     var values = allItems
                         .Select(item => Convert.ToSingle(prop.GetValue(item)))
                         .OrderBy(x => x)
@@ -167,9 +171,11 @@ namespace magisterka2
             var lastField = allFields.FirstOrDefault(p => p.Name.Equals(lastColumnName, StringComparison.OrdinalIgnoreCase));
             var limitedFields = new List<PropertyInfo>();
 
+            allFields.RemoveAll(x => x.Name.Equals("eligibleForProgression", StringComparison.OrdinalIgnoreCase));
             foreach (var p in allFields)
             {
                 if (p.Name.Equals(lastColumnName, StringComparison.OrdinalIgnoreCase)) continue;
+                if (names != null && !names.Contains(p.Name)) continue;
                 if (limitedFields.Count >= maxColumns) break;
                 limitedFields.Add(p);
             }
@@ -212,11 +218,11 @@ namespace magisterka2
         }
 
 
-        public static string DyscrtyzacjaReduced<T>(DbSet<T> dbSet, int bins = 5, int maxColumns = 220, string lastColumnName = "rank") where T : SecondaryBase
+        public static string DyscrtyzacjaReduced<T>(DbSet<T> dbSet, int bins = 5, List<string> names = null, string name = "", int maxColumns = 220, string lastColumnName = "rank") where T : SecondaryBase
         {
             Console.WriteLine("Aktualny czas: " + DateTime.Now.ToString("HH:mm:ss"));
             var type = typeof(T);
-            string filepath = path + @"\" + $"{type.Name}_{bins}_reduced";
+            string filepath = path + @"\" + $"{type.Name}_{bins}{name}_reduced";
             Console.WriteLine("Typ elementu w DbSet: " + type.FullName);
             Console.WriteLine($"Working for {maxColumns}");
             var properties = type.GetProperties()
@@ -255,6 +261,7 @@ namespace magisterka2
             foreach (var p in allFields)
             {
                 if (p.Name.Equals(lastColumnName, StringComparison.OrdinalIgnoreCase)) continue;
+                if (names != null && !names.Contains(p.Name)) continue;
                 if (limitedFields.Count >= maxColumns) break;
                 limitedFields.Add(p);
             }
@@ -301,11 +308,11 @@ namespace magisterka2
             return filepath;
         }
 
-        public static string DyscrtyzacjaNumbered<T>(DbSet<T> dbSet, int bins = 5, int maxColumns = 220, string lastColumnName = "rank") where T : SecondaryBase
+        public static string DyscrtyzacjaNumbered<T>(DbSet<T> dbSet, int bins = 5, List<string> names =null, string name = "", int maxColumns = 220, string lastColumnName = "rank") where T : SecondaryBase
         {
             Console.WriteLine("Aktualny czas: " + DateTime.Now.ToString("HH:mm:ss"));
             var type = typeof(T);
-            string filepath = path + @"\" + $"{type.Name}_{bins}_numbered";
+            string filepath = path + @"\" + $"{type.Name}_{bins}{name}_numbered";
             Console.WriteLine("Typ elementu w DbSet: " + type.FullName);
             Console.WriteLine($"Working for {maxColumns}");
             var properties = type.GetProperties()
@@ -344,6 +351,7 @@ namespace magisterka2
             foreach (var p in allFields)
             {
                 if (p.Name.Equals(lastColumnName, StringComparison.OrdinalIgnoreCase)) continue;
+                if (names != null && !names.Contains(p.Name)) continue;
                 if (limitedFields.Count >= maxColumns) break;
                 limitedFields.Add(p);
             }
