@@ -12,7 +12,7 @@ namespace magisterka2
 {
     public class Bayes
     {
-        static string path = @"C:\magisterka\Bayes\NewTest\TestBayes\";
+        static string path = @"C:\magisterka\Bayes\NewTest\Etap3\";
         public static void Tutorial10(string fullPath)
         {
             Console.WriteLine("Aktualny czas: " + DateTime.Now.ToString("HH:mm:ss"));
@@ -75,7 +75,7 @@ namespace magisterka2
                 net1.WriteFile($@"{path}{name}\{name}-bs1.xdsl");
             Network net2 = null;
             //bayesSearch.RandSeed = 3456789;
-            
+            /*
             messsage.Add("BayesianSearch 2 Begin");
             Console.WriteLine("Aktualny czas: " + DateTime.Now.ToString("HH:mm:ss"));
             seed = new Random().Next();
@@ -95,6 +95,7 @@ namespace magisterka2
             if (net2 != null)
                 net2.WriteFile($@"{path}{name}\{name}-bs2.xdsl");
             messsage.Add($"2st Bayesian Search finished, structure score: {bayesSearch.LastScore}");
+            */
             /*int idxAge = ds.FindVariable("Age");
             int idxProfession = ds.FindVariable("Profession");
             int idxCreditWorthiness = ds.FindVariable("CreditWorthiness");

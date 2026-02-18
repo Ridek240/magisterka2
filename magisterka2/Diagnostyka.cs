@@ -272,14 +272,14 @@ namespace magisterka2
             AnalizisByGroupByFile(db, "-tan", x => x.MPCRank, "MPCRank");
             AnalizisByGroupByFile(db, "-naive", x => x.MPCRank, "MPCRank");
 */
-            Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaNumbered(db.Secondary, 5, suma_naive_NCE.Take(50).Select(x => x.Node).ToList(),name: "_suma_naive_NCE"));
+            /*Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaNumbered(db.Secondary, 5, suma_naive_NCE.Take(50).Select(x => x.Node).ToList(),name: "_suma_naive_NCE"));
             Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaNumbered(db.Secondary_Awerage, 5, suma_naive_NCE.Take(50).Select(x => x.Node).ToList(),name: "_suma_naive_NCE"));
             Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaReduced(db.Secondary, 5, suma_naive_NCE.Take(50).Select(x => x.Node).ToList(),name: "_suma_naive_NCE"));
             Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaReduced(db.Secondary_Awerage, 5, suma_naive_NCE.Take(50).Select(x => x.Node).ToList(),name: "_suma_naive_NCE"));
-            Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaNumbered(db.Secondary, 5, suma_tan_NCE.Take(50).Select(x => x.Node).ToList(), name: "suma_tan_NCE"));
-            Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaNumbered(db.Secondary_Awerage, 5, suma_tan_NCE.Take(50).Select(x => x.Node).ToList(), name: "_suma_tan_NCE"));
-            Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaReduced(db.Secondary, 5, suma_tan_NCE.Take(50).Select(x => x.Node).ToList(), name: "_suma_tan_NCE"));
-            Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaReduced(db.Secondary_Awerage, 5, suma_tan_NCE.Take(50).Select(x => x.Node).ToList(), name: "_suma_tan_NCE"));
+            */Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaNumberedEqual(db.Secondary, 5, suma_tan_NCE.Take(100).Select(x => x.Node).ToList(), name: "_nxt"));
+            Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaNumberedEqual(db.Secondary_Awerage, 5, suma_tan_NCE.Take(100).Select(x => x.Node).ToList(), name: "_nxt"));
+            Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaReducedEqual(db.Secondary, 5, suma_tan_NCE.Take(100).Select(x => x.Node).ToList(), name: "_nxt"));
+            Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaReducedEqual(db.Secondary_Awerage, 5, suma_tan_NCE.Take(100).Select(x => x.Node).ToList(), name: "_nxt"));
             /*Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaReducedEqual(db.Secondary, 5, FileSumMPC.Take(50).Select(x => x.Node).ToList(),name: "_FileSumMPC"));
             Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaReducedEqual(db.Secondary, 5, FileSumCE.Take(50).Select(x => x.Node).ToList(),name: "_FileSumCE"));
             Bayes.Tutorial10(NewDiscretisations.DyscrtyzacjaReducedEqual(db.Secondary, 5, FileSumNCE.Take(50).Select(x => x.Node).ToList(),name: "_FileSumNCE"));
@@ -628,6 +628,110 @@ namespace magisterka2
             net.GetNodeId(observation.Node), observation.Measure,
             observation.Cost, observation.InfoGain);
         }
+
+        public static void BuildProfilesForAllClasses(GameDbContext db, string name, string className)
+        {
+
+            var net = new Network();
+            net.ReadFile(name);
+            Console.WriteLine($"IT WORKS!!! + {name}");
+            int classNode = net.GetNode(className);
+            int classStateCount = net.GetOutcomeCount(classNode);
+
+            for (int c = 0; c < classStateCount; c++)
+            {
+                string classState = net.GetOutcomeId(classNode, c);
+
+                net.ClearAllEvidence();
+                net.UpdateBeliefs();
+
+                double baseProb = net.GetNodeValue(classNode)[c];
+
+                var results = new List<(string Feature, string Value, double Prob, double Lift)>();
+
+                int nodeCount = net.GetNodeCount();
+
+                for (int n = 0; n < nodeCount; n++)
+                {
+                    string nodeId = net.GetNodeId(n);
+
+                    if (nodeId == className)
+                        continue;
+
+                    /*if (net.GetNodeType(n) != Network.NodeType.CPT)
+                        continue;
+                    */
+                    int outcomeCount = net.GetOutcomeCount(n);
+
+                    double bestLift = double.MinValue;
+                    string bestValue = "";
+                    double bestProb = 0;
+
+                    for (int i = 0; i < outcomeCount; i++)
+                    {
+                        string value = net.GetOutcomeId(n, i);
+
+                        net.ClearAllEvidence();
+                        net.SetEvidence(nodeId, value);
+                        net.UpdateBeliefs();
+
+                        double prob = net.GetNodeValue(classNode)[c];
+                        double lift = prob / baseProb;
+
+                        if (lift > bestLift)
+                        {
+                            bestLift = lift;
+                            bestValue = value;
+                            bestProb = prob;
+                        }
+                    }
+
+                    results.Add((nodeId, bestValue, bestProb, bestLift));
+                }
+
+                var ordered = results.OrderByDescending(r => r.Lift);
+
+                Console.WriteLine($"\n==============================");
+                Console.WriteLine($"PROFIL dla {className} = {classState}");
+                Console.WriteLine($"Bazowe P = {baseProb:F4}");
+                Console.WriteLine($"==============================");
+
+                foreach (var r in ordered)
+                {
+
+                    db.ClassProfiles.Add(
+                    new ClassProfiles
+                    {
+                        Sorce = name,
+                        Feature = r.Feature,
+                        Class = classState,
+                        Best = r.Value,
+                        P = r.Prob,
+                        BaseP = baseProb,
+                        Lift = r.Lift,
+                    });
+                }
+
+                db.SaveChanges();
+            }
+        }
+
+
+
+
+
+    }
+
+    public class ClassProfiles
+    {
+        public int Id { get; set; }
+        public string Feature { get; set; }
+        public string Sorce { get; set; }
+        public string Class { get; set; }
+        public string Best { get; set; }
+        public double P { get; set; }
+        public double BaseP { get; set; }
+        public double Lift { get; set; }
     }
     public class DiagnosticResult
     {
@@ -665,4 +769,6 @@ namespace magisterka2
         public string D { get; set; }
         public List<NodeSumDto> Nodes { get; set;}
     }
+
+
 }

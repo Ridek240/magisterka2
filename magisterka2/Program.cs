@@ -64,15 +64,17 @@ class Program
         }*/
         //db.SaveChanges();
         //Console.WriteLine(Path.GetFileName(db.ValidationResults.First().DataFile));
-        Diagnostics.Calculations(db);
-        //Validation.IterateFolders();
+        
+        //Diagnostics.Calculations(db);
+        Validation.IterateFolders2(db);
+        
         /*
         Console.WriteLine($"Primary:{db.Primary.Count()}");
         Console.WriteLine($"Secondary:{db.Secondary.Count()}");
         Console.WriteLine($"Secondary_average:{db.Secondary_Awerage.Count()}");
         Console.WriteLine($"PlayerRanks:{db.PlayerRanks.Count()}");
         */
-
+        return;
         //Selectors.PrintData(db, "reduced");
         Console.WriteLine("work");
         Selectors.ConfusionMatrixPrtint(db, "Secondary_averave_5_evenBins_numbered-naive.xdsl");
@@ -84,7 +86,7 @@ class Program
     .Distinct()
     .ToList();
         return;
-
+        
         string folderPath = @"C:\magisterka\Bayes\NewTest";  // folder, w którym szukamy
         string extension = "*.xdsl";           // rozszerzenie plików, np. *.txt
 

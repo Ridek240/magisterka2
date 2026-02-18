@@ -24,6 +24,7 @@ namespace magisterka2
         public DbSet<OutcomeResult> OutcomeResults { get; set; }
         public DbSet<ConfusionMatrixEntry> ConfusionMatrixEntries { get; set; }
         public DbSet<RocPoint> RocPoints { get; set; }
+        public DbSet<ClassProfiles> ClassProfiles { get; set; }
 
         //protected override void OnConfiguring(DbContextOptionsBuilder options)
         //=> options.UseSqlite("Data Source=C:\\magisterka\\Bazy\\RawData.db");

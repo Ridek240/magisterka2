@@ -12,7 +12,7 @@ namespace magisterka2
 {
     public class NewDiscretisations
     {
-        static string path = @"C:\magisterka\Bayes\NewTest\braki\";
+        static string path = @"C:\magisterka\Bayes\NewTest\Etap3\";
         public static string DyscrtyzacjaReducedEqual<T>(DbSet<T> dbSet, int bins = 5, List<string> names = null, string name ="", int maxColumns = 220, string lastColumnName = "rank") where T : SecondaryBase
         {
             Console.WriteLine("Aktualny czas: " + DateTime.Now.ToString("HH:mm:ss"));

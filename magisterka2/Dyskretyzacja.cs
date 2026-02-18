@@ -11,8 +11,8 @@ namespace magisterka2
 {
     public class Dyskretyzacja
     {
-
-        static string path = @"C:\magisterka\Bayes\NewTest";
+        
+        static string path = @"C:\magisterka\Bayes\NewTest\Etap3";
         public static void dyskretzacjaTest2<T>(DbSet<T> dbSet, int bins = 5) where T : Secondary_averave
         {
             var type = typeof(T);

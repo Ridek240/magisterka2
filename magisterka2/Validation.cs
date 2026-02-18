@@ -145,7 +145,7 @@ namespace magisterka2
 
         public static void IterateFolders()
         {
-            string folderPath = @"C:\magisterka\Bayes\NewTest\braki"; // podaj ścieżkę do folderu
+            string folderPath = @"C:\magisterka\Bayes\NewTest\Etap3"; // podaj ścieżkę do folderu
             string fileExtension = "*.xdsl";
             if (Directory.Exists(folderPath))
             {
@@ -161,9 +161,37 @@ namespace magisterka2
                     foreach (string file in files)
                     {
                         ValidateAll(file, dir + ".csv");
+                        //Diagnostics.Kuraw(file);
                         Console.WriteLine($"  Plik: {Path.GetFileName(file)}");
                     }
                 }
+            }
+        }
+
+        public static void IterateFolders2(GameDbContext db)
+        {
+            string folderPath = @"C:\magisterka\Bayes\NewTest\classy"; // podaj ścieżkę do folderu
+            string fileExtension = "*.xdsl";
+            if (Directory.Exists(folderPath))
+            {
+                /*// Pobieramy wszystkie foldery w danym katalogu
+                string[] directories = Directory.GetDirectories(folderPath);
+                
+                // Wyświetlamy same nazwy folderów (bez pełnej ścieżki)
+                foreach (string dir in directories)
+                {*/
+                db.ClassProfiles.RemoveRange(db.ClassProfiles);
+                db.SaveChanges();
+                    string[] files = Directory.GetFiles(folderPath, fileExtension);
+
+
+                    foreach (string file in files)
+                    {
+                        //ValidateAll(file, dir + ".csv");
+                        Diagnostics.BuildProfilesForAllClasses(db, file, "rank");
+                        Console.WriteLine($"  Plik: {Path.GetFileName(file)}");
+                    }
+                
             }
         }
 
